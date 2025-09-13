@@ -395,6 +395,7 @@ figure {
   --gap: 0.3rem;
   background-color: var(--clr-neutral-700);
   border-radius: 0.3rem;
+  cursor: pointer;
 }
 
 .title {
@@ -414,10 +415,15 @@ figure {
   padding-left: 2rem; /* add space for icon */
   background: url("./assets/images/icon-search.svg") no-repeat 0.7rem;
   background-size: 1rem;
+  color: hsl(250, 6%, 84%);
   border: 0;
   background-color: var(--clr-neutral-800);
   border-radius: 10px;
+  outline: 0;
+}
 
+.input:focus, input:hover {
+  border: 1px solid hsl(240, 6%, 70%);
 }
 .input::placeholder {
   color: var(--clr-neutral-300);
@@ -542,6 +548,7 @@ figure {
   background-color: hsla(243, 23%, 24%, 0.5);
   gap: .8rem;
   border-radius: 1rem;
+  position: relative;
 }
 .hourly-forecast div:first-child {
   justify-content: space-between;
@@ -564,14 +571,31 @@ figure {
 
 .units-drop-down {
   display: none;
-  font-size: 13px;
+  font-size: 12px;
   width: fit-content;
   padding: .5rem 1rem;
   background-color: hsl(243, 27%, 20%);
   border-radius: 0.3rem;
   position: absolute;
   right: 5%;
-  top:3.8rem;
+  top:3rem;
+  z-index: 100;
+}
+
+.now-mes{
+  background: url(./assets/images/icon-checkmark.svg);
+  background-repeat: no-repeat;
+  background-position: 7rem;
+  background-color: hsla(243, 23%, 30%, .7);
+  border-radius: 3px;
+}
+.measure {
+  padding: 2px 3rem 2px 3px ;
+  border-radius: 3px;
+}
+
+.measure:hover, .measure:focus {
+  background-color: hsla(243, 23%, 30%, .7);
 }
 
 .units-mes {
@@ -584,10 +608,48 @@ figure {
   margin-top: .5rem;
 }
 
-.unit-container:hover  .units-drop-down{
-  display: inline;
+.unit-container:hover .units-drop-down{
+  display: block;
 }
 
+.search-drop-down {
+  display: none;
+  width: inherit;
+  padding: .5rem;
+  background-color: hsl(243, 27%, 20%);
+  border-radius: 10px;
+  flex-direction: column;
+  gap: 3px;
+}
+.search-drop-down div{
+  padding: 4px;
+  text-align: left;
+}
+.search-drop-down div:hover, div:focus {
+  background-color: hsl(243, 23%, 30%);
+  border-radius: 5px;
+}
+
+.hourly-forecast-dropdown {
+  display: none;
+  width: fit-content;
+  padding: .5rem;
+  background-color: hsl(243, 27%, 20%);
+  border-radius: 0.3rem;
+  position: absolute;
+  right: 5%;
+  top: 2.5rem;
+  z-index: 100;
+}
+
+.hourly-forecast-dropdown p{
+  padding: 2px 3rem 2px 3px ;
+  border-radius: 3px;
+}
+
+.hourly-forecast-dropdown p:hover, p:focus {
+  background-color: hsla(243, 23%, 30%, .7);
+}
 
 @media screen and (min-width: 35rem){
   .grid-container {
@@ -595,7 +657,7 @@ figure {
     margin: 2rem auto;
   }
   .units-drop-down{
-    top: 4.8rem;
+    top: 4rem;
   }
   .search {
     max-width: 70%;
