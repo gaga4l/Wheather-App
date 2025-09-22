@@ -6,7 +6,10 @@ const currentHumidity = document.getElementById("current-humidity");
 const currentPrecipitation = document.getElementById("current-precipitation");
 const currentFeels = document.getElementById("current-feels");
 const currentLocation = document.getElementById("current-location");
+const day1Max = document.getElementById("day-1-max")
+const day1min = document.getElementById("day-1-min")
 
+//------------------------------------------------------------------------------------
 async function getCoordinates(locationName) {
   const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
     locationName
@@ -27,6 +30,7 @@ async function getCoordinates(locationName) {
     console.error("Error: ", error);
   }
 }
+//------------------------------------------------------------------------------------
 
 async function getWeatherData(city, country, latitude, longitude) {
   const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,rain,precipitation_probability,windspeed_10m&hourly=temperature_2m,precipitation,windspeed_10m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,apparent_temperature_max&timezone=${timezone}`;
@@ -35,7 +39,7 @@ async function getWeatherData(city, country, latitude, longitude) {
     const response = await fetch(weatherUrl);
     const data = await response.json();
 
-    currentLocation.getElementById = `${city}, ${country}`;
+    currentLocation.textContent = `${city}, ${country}`;
 
     currentTemp.textContent = Math.round(data.current.temperature_2m);
 
@@ -46,6 +50,18 @@ async function getWeatherData(city, country, latitude, longitude) {
     currentPrecipitation.textContent = Math.round(data.current.precipitation);
     currentFeels.textContent = Math.round(data.current.apparent_temperature);
 
+
+    const now = new Date();
+    console.log(now.getDay())
+    todayDate.textContent = now.toLocaleDateString("en-us", {
+      weekday: "long",
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    });
+
+
+
     // Hourly details example (first hour)
     const hourlyTemp = data.hourly.temperature_2m[0];
     const hourlyPrecipitation = data.hourly.precipitation[0];
@@ -55,6 +71,19 @@ async function getWeatherData(city, country, latitude, longitude) {
     // Daily details example (first day)
     const dailyMaxTemp = data.daily.temperature_2m_max[0];
     const dailyMinTemp = data.daily.temperature_2m_min[0];
+
+    // day1Max.textContent = Math.round(dailyMaxTemp)
+    // day1min.textContent = Math.round(dailyMinTemp)
+
+    for (let i = 1; i <= 7; i++){
+
+      const dayMax = document.getElementById(`day-${i}-max`)
+      const dayMin= document.getElementById(`day-${i}-min`)
+      dayMax.textContent = Math.round(data.daily.temperature_2m_max[i-1])
+      
+      dayMin.textContent = Math.round(data.daily.temperature_2m_min[i-1])
+    }
+
     const dailyPrecipitationSum = data.daily.precipitation_sum[0];
     const dailyMaxWindSpeed = data.daily.windspeed_10m_max[0];
     const dailyFeelsLikeMax = data.daily.apparent_temperature_max[0];
@@ -70,17 +99,25 @@ async function getWeatherData(city, country, latitude, longitude) {
     console.log("Daily precipitation sum:", dailyPrecipitationSum);
     console.log("Daily max wind speed:", dailyMaxWindSpeed);
     console.log("Daily feels like max:", dailyFeelsLikeMax);
+    
 
+   
+
+    
     return data;
   } catch (error) {
     console.error("Error: ", error);
   }
 }
+//------------------------------------------------------------------------------------
 
 async function fetchWeatherForLocation(locationName) {
   const coord = await getCoordinates(locationName);
 
   if (coord) {
+    if (coord.city == undefined){
+      coord.city = locationName
+    }
     const weather = await getWeatherData(
       coord.city,
       coord.country,
@@ -89,9 +126,9 @@ async function fetchWeatherForLocation(locationName) {
     );
   }
 }
-
-
-
-const loc = "adama";
+//------------------------------------------------------------------------------------
+let loc = "addis ababa";
+const n = String(loc)
+loc = n.charAt(0).toUpperCase() + n.slice(1).toLowerCase()
 const timezone = "auto";
 fetchWeatherForLocation(loc);
