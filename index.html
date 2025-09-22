@@ -43,8 +43,8 @@
     <main class="main">
       <h1 class="title ff-dmsans">How's the sky looking today?</h1>
       <div class="search grid">
-        <input type="text" class="input" placeholder="Search for a place...." />
-        <button class="btn">Search</button>
+        <input id="search-place" type="text" class="input" placeholder="Search for a place...." />
+        <button id="search-btn" class="btn">Search</button>
 
         <div class="search-drop-down flex">
           <div><p>choose 1</p></div>
@@ -56,15 +56,15 @@
       <div class="wheather-grid-container">
         <div class="show">
           <div>
-            <p class="location">Berlin, Germany</p>
-            <p class="date">Tuesday, Aug 5, 2025</p>
+            <p id="location" class="location">Berlin, Germany</p>
+            <p id="date" class="date">Tuesday, Aug 5, 2025</p>
           </div>
 
           <div class="contain flex">
             <div class="image-container">
-              <img src="./assets/images/icon-sunny.webp" alt="icon-sunny" />
+              <img id="weather-img" src="./assets/images/icon-sunny.webp" alt="icon-sunny" />
             </div>
-            <p>68°</p>
+            <p id="weather-degre">68°</p>
           </div>
         </div>
 
