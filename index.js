@@ -1,3 +1,12 @@
+const todayDate = document.getElementById("today-date");
+const currentTemp = document.getElementById("current-temp");
+const currentTempImg = document.getElementById("current-temp-img");
+const currentWindSpeed = document.getElementById("current-wind-speed");
+const currentHumidity = document.getElementById("current-humidity");
+const currentPrecipitation = document.getElementById("current-precipitation");
+const currentFeels = document.getElementById("current-feels");
+const currentLocation = document.getElementById("current-location");
+
 async function getCoordinates(locationName) {
   const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
     locationName
@@ -14,24 +23,28 @@ async function getCoordinates(locationName) {
       console.log("location not found");
       return null;
     }
-  } catch(error) {
+  } catch (error) {
     console.error("Error: ", error);
   }
 }
 
-async function getWeatherData(latitude, longitude) {
-
-    const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true&hourly=temperature_2m,precipitation,windspeed_10m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,apparent_temperature_max&timezone=${timezone}`;
+async function getWeatherData(city, country, latitude, longitude) {
+  const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,rain,precipitation_probability,windspeed_10m&hourly=temperature_2m,precipitation,windspeed_10m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,apparent_temperature_max&timezone=${timezone}`;
 
   try {
     const response = await fetch(weatherUrl);
     const data = await response.json();
 
-    console.log(data.current_weather)
-    
+    currentLocation.getElementById = `${city}, ${country}`;
 
-    const currentTemp = data.current_weather.temperature;
-    const currentWindSpeed = data.current_weather.windspeed;
+    currentTemp.textContent = Math.round(data.current.temperature_2m);
+
+    currentWindSpeed.textContent = Math.round(data.current.windspeed_10m);
+
+    currentHumidity.textContent = Math.round(data.current.relative_humidity_2m);
+
+    currentPrecipitation.textContent = Math.round(data.current.precipitation);
+    currentFeels.textContent = Math.round(data.current.apparent_temperature);
 
     // Hourly details example (first hour)
     const hourlyTemp = data.hourly.temperature_2m[0];
@@ -58,9 +71,8 @@ async function getWeatherData(latitude, longitude) {
     console.log("Daily max wind speed:", dailyMaxWindSpeed);
     console.log("Daily feels like max:", dailyFeelsLikeMax);
 
-    return data
-
-  } catch(error) {
+    return data;
+  } catch (error) {
     console.error("Error: ", error);
   }
 }
@@ -69,12 +81,17 @@ async function fetchWeatherForLocation(locationName) {
   const coord = await getCoordinates(locationName);
 
   if (coord) {
-    const weather = await getWeatherData(coord.latitude, coord.longitude);
+    const weather = await getWeatherData(
+      coord.city,
+      coord.country,
+      coord.latitude,
+      coord.longitude
+    );
   }
 }
 
-const loc = "germany";
-const timezone = "auto"
-fetchWeatherForLocation(loc)
 
 
+const loc = "adama";
+const timezone = "auto";
+fetchWeatherForLocation(loc);

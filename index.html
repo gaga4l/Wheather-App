@@ -29,13 +29,13 @@
           <p class="measure now-mes">Switch to Imperial</p>
           <p class="units-mes">Temprature</p>
           <p class="measure now-mes">Celsius(C) <span>img</span></p>
-          <p class="measure ">Fahrenhite(F)</p>
+          <p class="measure">Fahrenhite(F)</p>
           <p class="units-mes">Wind speed</p>
           <p class="measure now-mes">km/h</p>
-          <p class="measure ">mph</p>
+          <p class="measure">mph</p>
           <p class="units-mes">precipitation</p>
           <p class="measure now-mes">milimeters(mm)</p>
-          <p class="measure ">kilometers(km)</p>
+          <p class="measure">kilometers(km)</p>
         </div>
       </div>
     </header>
@@ -43,7 +43,12 @@
     <main class="main">
       <h1 class="title ff-dmsans">How's the sky looking today?</h1>
       <div class="search grid">
-        <input id="search-place" type="text" class="input" placeholder="Search for a place...." />
+        <input
+          id="search-place"
+          type="text"
+          class="input"
+          placeholder="Search for a place...."
+        />
         <button id="search-btn" class="btn">Search</button>
 
         <div class="search-drop-down flex">
@@ -56,36 +61,42 @@
       <div class="wheather-grid-container">
         <div class="show">
           <div>
-            <p id="location" class="location">Berlin, Germany</p>
-            <p id="date" class="date">Tuesday, Aug 5, 2025</p>
+            <p id="current-location" class="location">Berlin, Germany</p>
+            <p id="today-date" class="date">Tuesday, Aug 5, 2025</p>
           </div>
 
           <div class="contain flex">
             <div class="image-container">
-              <img id="weather-img" src="./assets/images/icon-sunny.webp" alt="icon-sunny" />
+              <img
+                id="current-temp-img"
+                src="./assets/images/icon-sunny.webp"
+                alt="icon-sunny"
+              />
             </div>
-            <p id="weather-degre">68°</p>
+            <p><span id="current-temp">68</span>°</p>
           </div>
         </div>
 
         <div class="details">
           <div class="details-items">
             <p>Feels like</p>
-            <p>64°</p>
+            <p><span id="current-feels"></span>°</p>
           </div>
           <div class="details-items">
             <p>Humidity</p>
-            <p>64%</p>
+            <p><span id="current-humidity"></span>%</p>
           </div>
           <div class="details-items">
             <p>wind</p>
-            <p>9 mph</p>
+            <p><span id="current-wind-speed"></span> mph</p>
           </div>
           <div class="details-items">
             <p>Precipitation</p>
-            <p>0 in</p>
+            <p><span id="current-precipitation"></span> mm</p>
           </div>
         </div>
+
+    
 
         <div class="para">
           <p>Daily forecast</p>
@@ -96,8 +107,8 @@
             <p>Mon</p>
             <img src="./assets/images/icon-rain.webp" alt="icon-rain" />
             <div class="degree-range flex">
-              <p>65</p>
-              <p>65</p>
+              <p><span id="day-1-max"></span>°</p>
+              <p><span id="day-1-min"></span>°</p>
             </div>
           </div>
           <div>
@@ -105,8 +116,8 @@
             <img src="./assets/images/icon-rain.webp" alt="icon-rain" />
 
             <div class="degree-range flex">
-              <p>65</p>
-              <p>65</p>
+              <p><span id="day-2-max"></span>°</p>
+              <p><span id="day-2-min"></span>°</p>
             </div>
           </div>
           <div>
@@ -114,8 +125,8 @@
             <img src="./assets/images/icon-rain.webp" alt="icon-rain" />
 
             <div class="degree-range flex">
-              <p>65</p>
-              <p>65</p>
+              <p><span id="day-3-max"></span>°</p>
+              <p><span id="day-3-min"></span>°</p>
             </div>
           </div>
           <div>
@@ -123,8 +134,8 @@
             <img src="./assets/images/icon-rain.webp" alt="icon-rain" />
 
             <div class="degree-range flex">
-              <p>65</p>
-              <p>65</p>
+              <p><span id="day-4-max"></span>°</p>
+              <p><span id="day-4-min"></span>°</p>
             </div>
           </div>
           <div>
@@ -132,8 +143,8 @@
             <img src="./assets/images/icon-rain.webp" alt="icon-rain" />
 
             <div class="degree-range flex">
-              <p>65</p>
-              <p>65</p>
+              <p><span id="day-5-max"></span>°</p>
+              <p><span id="day-5-min"></span></p>
             </div>
           </div>
           <div>
@@ -141,8 +152,8 @@
             <img src="./assets/images/icon-rain.webp" alt="icon-rain" />
 
             <div class="degree-range flex">
-              <p>65</p>
-              <p>65</p>
+              <p><span id="day-6-max"></span>°</p>
+              <p><span id="day-6-min"></span>°</p>
             </div>
           </div>
           <div>
@@ -150,8 +161,8 @@
             <img src="./assets/images/icon-rain.webp" alt="icon-rain" />
 
             <div class="degree-range flex">
-              <p>65</p>
-              <p>65</p>
+              <p><span id="day-7-max"></span>°</p>
+              <p><span id="day-7-min"></span>°</p>
             </div>
           </div>
         </div>
@@ -168,21 +179,20 @@
             </div>
           </div>
           <div class="hourly-forecast-dropdown">
-                  <p>Monday</p>
+            <p>Monday</p>
 
-                  <p>Monday</p>
+            <p>Monday</p>
 
-                  <p>Monday</p>
+            <p>Monday</p>
 
-                  <p>Monday</p>
+            <p>Monday</p>
 
-                  <p>Monday</p>
+            <p>Monday</p>
 
-                  <p>Monday</p>
+            <p>Monday</p>
 
-                  <p>Monday</p>
-
-              </div>
+            <p>Monday</p>
+          </div>
           <div class="items flex">
             <div>
               <img src="./assets/images/icon-rain.webp" alt="icon-rain" />
