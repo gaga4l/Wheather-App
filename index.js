@@ -6,8 +6,8 @@ const currentHumidity = document.getElementById("current-humidity");
 const currentPrecipitation = document.getElementById("current-precipitation");
 const currentFeels = document.getElementById("current-feels");
 const currentLocation = document.getElementById("current-location");
-const day1Max = document.getElementById("day-1-max")
-const day1min = document.getElementById("day-1-min")
+const day1Max = document.getElementById("day-1-max");
+const day1min = document.getElementById("day-1-min");
 
 //------------------------------------------------------------------------------------
 async function getCoordinates(locationName) {
@@ -33,7 +33,7 @@ async function getCoordinates(locationName) {
 //------------------------------------------------------------------------------------
 
 async function getWeatherData(city, country, latitude, longitude) {
-  const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,rain,precipitation_probability,windspeed_10m&hourly=temperature_2m,precipitation,windspeed_10m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,apparent_temperature_max&timezone=${timezone}`;
+  const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,rain,precipitation_probability,windspeed_10m&hourly=temperature_2m,weathercode,precipitation,windspeed_10m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,windspeed_10m_max,apparent_temperature_max&timezone=${timezone}`;
 
   try {
     const response = await fetch(weatherUrl);
@@ -50,17 +50,15 @@ async function getWeatherData(city, country, latitude, longitude) {
     currentPrecipitation.textContent = Math.round(data.current.precipitation);
     currentFeels.textContent = Math.round(data.current.apparent_temperature);
 
+    const days = ["Sun", "Mon", "Tue", "wed", "Thrus", "Fri", "Sat"];
 
     const now = new Date();
-    console.log(now.getDay())
     todayDate.textContent = now.toLocaleDateString("en-us", {
       weekday: "long",
       day: "numeric",
       month: "short",
       year: "numeric",
     });
-
-
 
     // Hourly details example (first hour)
     const hourlyTemp = data.hourly.temperature_2m[0];
@@ -74,36 +72,57 @@ async function getWeatherData(city, country, latitude, longitude) {
 
     // day1Max.textContent = Math.round(dailyMaxTemp)
     // day1min.textContent = Math.round(dailyMinTemp)
+    let counter = now.getDay();
+    for (let i = 1; i <= 7; i++) {
+      const dayMax = document.getElementById(`day-${i}-max`);
+      const dayMin = document.getElementById(`day-${i}-min`);
+      const today = document.getElementById(`day-${i}`);
 
-    for (let i = 1; i <= 7; i++){
+      dayMax.textContent = Math.round(data.daily.temperature_2m_max[i - 1]);
+      dayMin.textContent = Math.round(data.daily.temperature_2m_min[i - 1]);
+      const s = now.getDay();
 
-      const dayMax = document.getElementById(`day-${i}-max`)
-      const dayMin= document.getElementById(`day-${i}-min`)
-      dayMax.textContent = Math.round(data.daily.temperature_2m_max[i-1])
-      
-      dayMin.textContent = Math.round(data.daily.temperature_2m_min[i-1])
+      if (counter === s) {
+        today.textContent = "Now";
+      } else if (counter != s && counter === 7) {
+        counter = 0;
+      } else {
+        today.textContent = days[counter];
+      }
+      counter++;
     }
 
-    const dailyPrecipitationSum = data.daily.precipitation_sum[0];
-    const dailyMaxWindSpeed = data.daily.windspeed_10m_max[0];
-    const dailyFeelsLikeMax = data.daily.apparent_temperature_max[0];
+    const times = data.hourly.time;
+    const temps = data.hourly.temperature_2m;
+    const codes = data.hourly.weathercode;
+    console.log(codes)
 
-    console.log("Current temperature:", currentTemp);
-    console.log("Current wind speed:", currentWindSpeed);
-    console.log("Hourly temperature:", hourlyTemp);
-    console.log("Hourly precipitation:", hourlyPrecipitation);
-    console.log("Hourly wind speed:", hourlyWindSpeed);
-    console.log("Hourly humidity:", hourlyHumidity);
-    console.log("Daily max temperature:", dailyMaxTemp);
-    console.log("Daily min temperature:", dailyMinTemp);
-    console.log("Daily precipitation sum:", dailyPrecipitationSum);
-    console.log("Daily max wind speed:", dailyMaxWindSpeed);
-    console.log("Daily feels like max:", dailyFeelsLikeMax);
-    
+    for (let i = 0; i < 8; i++) {
+      const date = new Date(times[i]);
+      const hour = date.getHours();
+      const displayHour =
+        hour === 0
+          ? "12 AM"
+          : hour < 12
+          ? hour + " AM"
+          : (hour - 12 || 12) + " PM";
 
-   
+      // pick icon path from weather code
+      const icon = getWeatherIcon(codes[i]);
 
-    
+      const container = document.getElementById("hourly-forecast-container")
+      const card = document.createElement("div");
+      card.className = "items flex flex-col items-center";
+      card.innerHTML = `
+      <div>
+        <img src="${icon}" alt="weather-icon" />
+      </div>
+      <p>${displayHour}</p>
+      <p>${Math.round(temps[i])}°</p>
+    `;
+    container.appendChild(card)
+    }
+
     return data;
   } catch (error) {
     console.error("Error: ", error);
@@ -115,8 +134,8 @@ async function fetchWeatherForLocation(locationName) {
   const coord = await getCoordinates(locationName);
 
   if (coord) {
-    if (coord.city == undefined){
-      coord.city = locationName
+    if (coord.city == undefined) {
+      coord.city = locationName;
     }
     const weather = await getWeatherData(
       coord.city,
@@ -127,8 +146,29 @@ async function fetchWeatherForLocation(locationName) {
   }
 }
 //------------------------------------------------------------------------------------
-let loc = "addis ababa";
-const n = String(loc)
-loc = n.charAt(0).toUpperCase() + n.slice(1).toLowerCase()
+
+function getWeatherIcon(code) {
+  if (code === 0) return "./assets/images/icon-sunny.webp"; // clear
+  if ([1, 2].includes(code))
+    return "./assets/images/icon-partly-cloudy.webp"; // partly cloudy
+  if (code === 3) return "./assets/images/icon-overcast.webp"; // overcast
+  if (code >= 51 && code <= 67) return "./assets/images/icon-rain.webp"; // rain
+  if (code >= 71 && code <= 77) return "./assets/images/icon-snow.webp"; // snow
+  if (code >= 95) return "./assets/images/icon-storm.webp.webp"; // thunderstorm
+  return "./assets/images/icon-fog.webp"; // fallback
+}
+
+//------------------------------------------------------------------------------------
+let loc = "Addis ababa";
+const n = String(loc);
+loc = n
+  .split(" ") // split by spaces
+  .map(
+    (word) =>
+      word.charAt(0).toUpperCase() + // first letter upper
+      word.slice(1).toLowerCase() // rest lower
+  )
+  .join(" ");
+
 const timezone = "auto";
 fetchWeatherForLocation(loc);

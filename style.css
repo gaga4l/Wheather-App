@@ -2,7 +2,6 @@
 /* Custom properties   */
 /* ------------------- */
 
-
 :root {
   /* colors */
   --clr-neutral-900: hsl(243, 96%, 9%);
@@ -17,12 +16,10 @@
   --clr-light: hsl(231 77% 90%);
   --clr-white: hsl(0 0% 100%);
 
-
   --clr-orange: hsl(28, 100%, 52%);
 
   --clr-blue-500: hsl(233, 67%, 56%);
   --clr-blue-700: hsl(248, 70%, 36%);
-
 
   /* font-sizes */
   --fs-900: clamp(5rem, 8vw + 1rem, 9.375rem);
@@ -35,7 +32,7 @@
   --fs-200: 0.875rem;
 
   /* font-families */
-  --ff-dmsans:"DM Sans", sans-serif;
+  --ff-dmsans: "DM Sans", sans-serif;
   --ff-baricolage-grotesque: "Bricolage Grotesque", sans-serif;
   --ff-serif: "Bellefair", serif;
   --ff-sans-cond: "Barlow Condensed", sans-serif;
@@ -147,7 +144,6 @@ figure {
     }
   }
 }
-
 
 /* -------------------------------------  */
 /* Utility Classes */
@@ -265,9 +261,6 @@ figure {
   background-color: var(--clr-white);
 }
 
-
-
-
 .text-neutral-0 {
   background-color: var(--clr-neutral-0);
 }
@@ -372,9 +365,6 @@ figure {
   line-height: 1.1;
 }
 
-
-
-
 /* ------------------- */
 /* Custom properties   */
 /* ------------------- */
@@ -422,7 +412,8 @@ figure {
   outline: 0;
 }
 
-.input:focus, input:hover {
+.input:focus,
+input:hover {
   border: 1px solid hsl(240, 6%, 70%);
 }
 .input::placeholder {
@@ -445,15 +436,15 @@ figure {
   /* padding: 1rem; */
   display: grid;
   gap: 1rem;
-  grid-template-areas: 
-  "show"
-  "details"
-  "para"
-  "daily-forecast"
-  "hourly-forecast";
+  grid-template-areas:
+    "show"
+    "details"
+    "para"
+    "daily-forecast"
+    "hourly-forecast";
 }
 
-.show{
+.show {
   grid-area: show;
   background: url(./assets/images/bg-today-small.svg);
   background-size: cover;
@@ -477,7 +468,7 @@ figure {
   justify-content: center;
 }
 
-.contain p{
+.contain p {
   font-size: var(--fs-900);
   font-weight: 600;
   font-family: cursive, sans-serif;
@@ -487,13 +478,11 @@ figure {
   width: 6rem;
 }
 
-
-
 .details {
   border-radius: 1rem;
   grid-area: details;
   display: grid;
-  grid-template-columns: 1fr 1fr ;
+  grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
@@ -519,18 +508,15 @@ figure {
   text-align: left;
 }
 
-
 .daily-forecast {
   grid-area: daily-forecast;
   grid-template-columns: 1fr 1fr 1fr;
-
 }
 
 .daily-forecast > div {
   background-color: hsla(240, 6%, 70%, 0.2);
   padding: 0.5rem;
   border-radius: 0.7rem;
-
 }
 
 .daily-forecast img {
@@ -544,9 +530,9 @@ figure {
 
 .hourly-forecast {
   grid-area: hourly-forecast;
-  padding: .8rem;
+  padding: 0.8rem;
   background-color: hsla(243, 23%, 24%, 0.5);
-  gap: .8rem;
+  gap: 0.8rem;
   border-radius: 1rem;
   position: relative;
 }
@@ -561,7 +547,7 @@ figure {
   align-items: center;
   border-radius: 10px;
 }
-.items div{
+.items div {
   width: 2rem;
 }
 
@@ -573,59 +559,61 @@ figure {
   display: none;
   font-size: 12px;
   width: fit-content;
-  padding: .5rem 1rem;
+  padding: 0.5rem 1rem;
   background-color: hsl(243, 27%, 20%);
   border-radius: 0.3rem;
   position: absolute;
   right: 5%;
-  top:3rem;
+  top: 3rem;
   z-index: 100;
 }
 
-.now-mes{
+.now-mes {
   background: url(./assets/images/icon-checkmark.svg);
   background-repeat: no-repeat;
   background-position: 7rem;
-  background-color: hsla(243, 23%, 30%, .7);
+  background-color: hsla(243, 23%, 30%, 0.7);
   border-radius: 3px;
 }
 .measure {
-  padding: 2px 3rem 2px 3px ;
+  padding: 2px 3rem 2px 3px;
   border-radius: 3px;
 }
 
-.measure:hover, .measure:focus {
-  background-color: hsla(243, 23%, 30%, .7);
+.measure:hover,
+.measure:focus {
+  background-color: hsla(243, 23%, 30%, 0.7);
 }
 
 .units-mes {
   color: hsl(240, 6%, 70%);
-  border-top: 1px solid hsla(240, 6%, 70%, .3);
-  padding-top: .5rem;
+  border-top: 1px solid hsla(240, 6%, 70%, 0.3);
+  padding-top: 0.5rem;
 }
 
-.units-drop-down > :not(:first-child){
-  margin-top: .5rem;
+.units-drop-down > :not(:first-child) {
+  margin-top: 0.5rem;
 }
 
-.unit-container:hover .units-drop-down{
+.unit-container:hover .units-drop-down {
   display: block;
 }
 
 .search-drop-down {
   display: none;
   width: inherit;
-  padding: .5rem;
+  padding: 0.5rem;
   background-color: hsl(243, 27%, 20%);
   border-radius: 10px;
   flex-direction: column;
   gap: 3px;
 }
-.search-drop-down div{
+.search-drop-down div {
   padding: 4px;
   text-align: left;
 }
-.search-drop-down div:hover, div:focus {
+.search-drop-down div:hover,
+div:focus {
   background-color: hsl(243, 23%, 30%);
   border-radius: 5px;
 }
@@ -633,7 +621,7 @@ figure {
 .hourly-forecast-dropdown {
   display: none;
   width: fit-content;
-  padding: .5rem;
+  padding: 0.5rem;
   background-color: hsl(243, 27%, 20%);
   border-radius: 0.3rem;
   position: absolute;
@@ -642,21 +630,22 @@ figure {
   z-index: 100;
 }
 
-.hourly-forecast-dropdown p{
-  padding: 2px 3rem 2px 3px ;
+.hourly-forecast-dropdown p {
+  padding: 2px 3rem 2px 3px;
   border-radius: 3px;
 }
 
-.hourly-forecast-dropdown p:hover, p:focus {
-  background-color: hsla(243, 23%, 30%, .7);
+.hourly-forecast-dropdown p:hover,
+p:focus {
+  background-color: hsla(243, 23%, 30%, 0.7);
 }
 
-@media screen and (min-width: 35rem){
+@media screen and (min-width: 35rem) {
   .grid-container {
     max-width: 90%;
     margin: 2rem auto;
   }
-  .units-drop-down{
+  .units-drop-down {
     top: 4rem;
   }
   .search {
@@ -669,15 +658,15 @@ figure {
   }
 
   .wheather-grid-container {
-    grid-template-areas: 
-    "show hourly-forecast"
-    "details hourly-forecast"
-    "para hourly-forecast"
-    "daily-forecast hourly-forecast";
+    grid-template-areas:
+      "show hourly-forecast"
+      "details hourly-forecast"
+      "para hourly-forecast"
+      "daily-forecast hourly-forecast";
   }
 
   .details {
-    grid-template-columns: 1fr 1fr 1fr 1fr ;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
   }
   .daily-forecast {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
@@ -689,9 +678,8 @@ figure {
     align-items: center;
     background: url(./assets/images/bg-today-large.svg);
     background-size: cover;
-    
   }
-  .show > :first-child{
+  .show > :first-child {
     justify-self: start;
   }
   .contain {
@@ -699,8 +687,4 @@ figure {
     align-items: center;
     gap: 3rem;
   }
-
-
-
 }
-
