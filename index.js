@@ -13,6 +13,7 @@ const hourlyForecastDropdown = document.getElementById(
 );
 const daysContainer = document.getElementById("days-container");
 const body = document.querySelector("body");
+let loc = "Addis ababa";
 
 //------------------------------------------------------------------------------------
 unitsDropdown.addEventListener("click", (e) => {
@@ -20,22 +21,22 @@ unitsDropdown.addEventListener("click", (e) => {
     case "celsius":
       unitOptions.tempUnit = "celsius"
       e.target.classList.add("now-mes");
-      document.getElementById("fahrenhite").classList.remove("now-mes");
+      document.getElementById("fahrenheit").classList.remove("now-mes");
       break; 
-    case "fahrenhite":
-      unitOptions.tempUnit = "fahrenhite"
+    case "fahrenheit":
+      unitOptions.tempUnit = "fahrenheit"
       e.target.classList.add("now-mes");
       document.getElementById("celsius").classList.remove("now-mes");
       break;
-    case "km/h":
-      unitOptions.windUnit = "km/h"
+    case "kmh":
+      unitOptions.windUnit = "kmh"
       e.target.classList.add("now-mes");
       document.getElementById("mph").classList.remove("now-mes");
       break;
     case "mph":
       unitOptions.windUnit = "mph"
       e.target.classList.add("now-mes");
-      document.getElementById("km/h").classList.remove("now-mes");
+      document.getElementById("kmh").classList.remove("now-mes");
       break;
     case "mm":
       unitOptions.precipUnit = "mm"
@@ -47,7 +48,7 @@ unitsDropdown.addEventListener("click", (e) => {
       e.target.classList.add("now-mes");
       document.getElementById("mm").classList.remove("now-mes");
       break;
-  } fetchWeatherForLocation(loc)
+  }
 });
 
 //------------------------------------------------------------------------------------
@@ -241,7 +242,7 @@ async function fetchWeatherForLocation(locationName) {
     if (coord.city == undefined) {
       coord.city = locationName;
     }
-    const weather = await getWeatherData(
+    getWeatherData(
       coord.city,
       coord.country,
       weatherUrl
@@ -272,16 +273,16 @@ function getWeatherIcon(code) {
   url += "&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weathercode,rain,precipitation_probability,windspeed_10m";
   url += "&hourly=temperature_2m,weathercode,precipitation,windspeed_10m,relative_humidity_2m";
   url += "&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,windspeed_10m_max,apparent_temperature_max";
-  url += `&timezone=${timezone}`;
+  // url += `&timezone=${timezone}`;
 
-  if (options.tempUnit) url += `&temperature_unit=${options.tempUnit}`;
-  if (options.windUnit) url += `&wind_speed_unit=${options.windUnit}`;
-  if (options.precipUnit) url += `&precipitation_unit=${options.precipUnit}`;
+  if (options.tempUnit && options.tempUnit !== "celsius") url += `&temperature_unit=${options.tempUnit}`;
+  if (options.windUnit && options.windUnit !== "kmh") url += `&wind_speed_unit=${options.windUnit}`;
+  if (options.precipUnit && options.precipUnit !== "mm") url += `&precipitation_unit=${options.precipUnit}`;
 
   return url;
 }
 
-// Default
+
 let unitOptions = {
   tempUnit: "celsius",         // or "fahrenheit"
   windUnit: "kmh",             // or "mph"
@@ -291,9 +292,12 @@ let unitOptions = {
 
 
 
-//------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+const coord = { latitude: currentLatitude, longitude: currentLongitude }; // store this globally after geocoding
+const weatherUrl = buildWeatherUrl(unitOptions, coord.latitude, coord.longitude, timezone);
 
-let loc = "Addis ababa";
+  // fetch weather
+fetchWeatherForLocation(loc, weatherUrl);
 const n = String(loc);
 loc = n
   .split(" ") // split by spaces
@@ -305,4 +309,4 @@ loc = n
   .join(" ");
 
 const timezone = "auto";
-fetchWeatherForLocation(loc);
+fetchWeatherForLocation(loc, timezone);
