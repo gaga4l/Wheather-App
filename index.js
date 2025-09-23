@@ -12,6 +12,8 @@ const hourlyForecastDropdown = document.getElementById(
   "hourly-forecast-dropdown"
 );
 const daysContainer = document.getElementById("days-container");
+let currentLatitude = null;
+let currentLongitude = null;
 const body = document.querySelector("body");
 let loc = "Addis ababa";
 
@@ -19,36 +21,37 @@ let loc = "Addis ababa";
 unitsDropdown.addEventListener("click", (e) => {
   switch (e.target.id) {
     case "celsius":
-      unitOptions.tempUnit = "celsius"
+      unitOptions.tempUnit = "celsius";
       e.target.classList.add("now-mes");
       document.getElementById("fahrenheit").classList.remove("now-mes");
-      break; 
+      break;
     case "fahrenheit":
-      unitOptions.tempUnit = "fahrenheit"
+      unitOptions.tempUnit = "fahrenheit";
       e.target.classList.add("now-mes");
       document.getElementById("celsius").classList.remove("now-mes");
       break;
     case "kmh":
-      unitOptions.windUnit = "kmh"
+      unitOptions.windUnit = "kmh";
       e.target.classList.add("now-mes");
       document.getElementById("mph").classList.remove("now-mes");
       break;
     case "mph":
-      unitOptions.windUnit = "mph"
+      unitOptions.windUnit = "mph";
       e.target.classList.add("now-mes");
       document.getElementById("kmh").classList.remove("now-mes");
       break;
     case "mm":
-      unitOptions.precipUnit = "mm"
+      unitOptions.precipUnit = "mm";
       e.target.classList.add("now-mes");
       document.getElementById("km").classList.remove("now-mes");
       break;
     case "inch":
-      unitOptions.precipUnit = "inch"
+      unitOptions.precipUnit = "inch";
       e.target.classList.add("now-mes");
       document.getElementById("mm").classList.remove("now-mes");
       break;
   }
+  fetchWeatherForLocation(loc)
 });
 
 //------------------------------------------------------------------------------------
@@ -112,14 +115,14 @@ async function getWeatherData(city, country, weatherUrl) {
 
     currentLocation.textContent = `${city}, ${country}`;
 
-    currentTemp.textContent = Math.round(data.current.temperature_2m);
+    currentTemp.textContent = Math.round(data.current.temperature_2m) + "°";
 
-    currentWindSpeed.textContent = Math.round(data.current.windspeed_10m);
+    currentWindSpeed.textContent = Math.round(data.current.windspeed_10m) +" " + unitOptions.windUnit;
 
-    currentHumidity.textContent = Math.round(data.current.relative_humidity_2m);
+    currentHumidity.textContent = Math.round(data.current.relative_humidity_2m) + "%";
 
-    currentPrecipitation.textContent = Math.round(data.current.precipitation);
-    currentFeels.textContent = Math.round(data.current.apparent_temperature);
+    currentPrecipitation.textContent = Math.round(data.current.precipitation) + unitOptions.precipUnit;
+    currentFeels.textContent = Math.round(data.current.apparent_temperature) + "°";
 
     const days = ["Sun", "Mon", "Tue", "wed", "Thrus", "Fri", "Sat"];
 
@@ -169,12 +172,14 @@ async function getWeatherData(city, country, weatherUrl) {
     const currentCode = data.current.weathercode;
     currentTempImg.src = `${getWeatherIcon(currentCode)}`;
     let counter = now.getDay();
-
+    const dailyForecastContainer = document.getElementById(
+            "daily-forecast-container"
+          );
+          dailyForecastContainer.innerHTML = ""; // clear old cards first
     for (let i = 0; i < 7; i++) {
       const dailyIcon = getWeatherIcon(dailyCodes[i]);
-      const dailyForecastContainer = document.getElementById(
-        "daily-forecast-container"
-      );
+      
+
       const dailyCard = document.createElement("div");
       const dayMax = Math.round(data.daily.temperature_2m_max[i]);
       const dayMin = Math.round(data.daily.temperature_2m_min[i]);
@@ -196,7 +201,10 @@ async function getWeatherData(city, country, weatherUrl) {
       }
     }
 
+    const container = document.getElementById("hourly-forecast-container");
+    container.innerHTML = ""; // clear before appending
     let startIndex = times.findIndex((t) => new Date(t) >= now); // find closest forecast time >= now
+    container.innerHTML = ""; // clear before appending
 
     const step = 3;
     const limit = 8;
@@ -213,8 +221,6 @@ async function getWeatherData(city, country, weatherUrl) {
 
       // pick icon path from weather code
       const icon = getWeatherIcon(codes[i]);
-
-      const container = document.getElementById("hourly-forecast-container");
       const card = document.createElement("div");
       card.className = "items flex flex-col items-center";
       card.innerHTML = `
@@ -237,16 +243,19 @@ async function getWeatherData(city, country, weatherUrl) {
 
 async function fetchWeatherForLocation(locationName) {
   const coord = await getCoordinates(locationName);
-  const weatherUrl = buildWeatherUrl (unitOptions, coord.latitude, coord.longitude)
   if (coord) {
     if (coord.city == undefined) {
       coord.city = locationName;
     }
-    getWeatherData(
-      coord.city,
-      coord.country,
-      weatherUrl
+    currentLatitude = coord.latitude;
+    currentLongitude = coord.longitude;
+    const weatherUrl = buildWeatherUrl(
+      unitOptions,
+      currentLatitude,
+      currentLongitude,
+      "auto"
     );
+    getWeatherData(coord.city, coord.country, weatherUrl);
   }
 }
 //------------------------------------------------------------------------------------
@@ -268,36 +277,34 @@ function getWeatherIcon(code) {
 
 //------------------------------------------------------------------------------------
 
-  function buildWeatherUrl(options = {}, latitude, longitude) {
+function buildWeatherUrl(options = {}, latitude, longitude, timezone = "auto") {
   let url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}`;
-  url += "&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weathercode,rain,precipitation_probability,windspeed_10m";
-  url += "&hourly=temperature_2m,weathercode,precipitation,windspeed_10m,relative_humidity_2m";
-  url += "&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,windspeed_10m_max,apparent_temperature_max";
-  // url += `&timezone=${timezone}`;
+  url +=
+    "&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weathercode,rain,precipitation_probability,windspeed_10m";
+  url +=
+    "&hourly=temperature_2m,weathercode,precipitation,windspeed_10m,relative_humidity_2m";
+  url +=
+    "&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,windspeed_10m_max,apparent_temperature_max";
+  url += `&timezone=${timezone}`;
 
-  if (options.tempUnit && options.tempUnit !== "celsius") url += `&temperature_unit=${options.tempUnit}`;
-  if (options.windUnit && options.windUnit !== "kmh") url += `&wind_speed_unit=${options.windUnit}`;
-  if (options.precipUnit && options.precipUnit !== "mm") url += `&precipitation_unit=${options.precipUnit}`;
+  if (options.tempUnit && options.tempUnit !== "celsius")
+    url += `&temperature_unit=${options.tempUnit}`;
+  if (options.windUnit && options.windUnit !== "kmh")
+    url += `&wind_speed_unit=${options.windUnit}`;
+  if (options.precipUnit && options.precipUnit !== "mm")
+    url += `&precipitation_unit=${options.precipUnit}`;
 
   return url;
 }
 
-
 let unitOptions = {
-  tempUnit: "celsius",         // or "fahrenheit"
-  windUnit: "kmh",             // or "mph"
-  precipUnit: "mm",            // or "inch"
+  tempUnit: "celsius", // or "fahrenheit"
+  windUnit: "kmh", // or "mph"
+  precipUnit: "mm", // or "inch"
 };
 
-
-
-
 //-----------------------------------------------------------------------------------------
-const coord = { latitude: currentLatitude, longitude: currentLongitude }; // store this globally after geocoding
-const weatherUrl = buildWeatherUrl(unitOptions, coord.latitude, coord.longitude, timezone);
 
-  // fetch weather
-fetchWeatherForLocation(loc, weatherUrl);
 const n = String(loc);
 loc = n
   .split(" ") // split by spaces
@@ -308,5 +315,4 @@ loc = n
   )
   .join(" ");
 
-const timezone = "auto";
-fetchWeatherForLocation(loc, timezone);
+  fetchWeatherForLocation(loc)
