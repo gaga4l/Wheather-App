@@ -8,16 +8,47 @@ const currentFeels = document.getElementById("current-feels");
 const currentLocation = document.getElementById("current-location");
 const unitsContainer = document.getElementById("unit-container");
 const unitsDropdown = document.getElementById("units-drop-down");
-const hourlyForecastDropdown = document.getElementById("hourly-forecast-dropdown")
-const daysContainer = document.getElementById("days-container")
-const body = document.querySelector("body")
-
+const hourlyForecastDropdown = document.getElementById(
+  "hourly-forecast-dropdown"
+);
+const daysContainer = document.getElementById("days-container");
+const body = document.querySelector("body");
 
 //------------------------------------------------------------------------------------
-
-  unitsDropdown.addEventListener("click", (e) => {
-
-  })
+unitsDropdown.addEventListener("click", (e) => {
+  switch (e.target.id) {
+    case "celsius":
+      unitOptions.tempUnit = "celsius"
+      e.target.classList.add("now-mes");
+      document.getElementById("fahrenhite").classList.remove("now-mes");
+      break; 
+    case "fahrenhite":
+      unitOptions.tempUnit = "fahrenhite"
+      e.target.classList.add("now-mes");
+      document.getElementById("celsius").classList.remove("now-mes");
+      break;
+    case "km/h":
+      unitOptions.windUnit = "km/h"
+      e.target.classList.add("now-mes");
+      document.getElementById("mph").classList.remove("now-mes");
+      break;
+    case "mph":
+      unitOptions.windUnit = "mph"
+      e.target.classList.add("now-mes");
+      document.getElementById("km/h").classList.remove("now-mes");
+      break;
+    case "mm":
+      unitOptions.precipUnit = "mm"
+      e.target.classList.add("now-mes");
+      document.getElementById("km").classList.remove("now-mes");
+      break;
+    case "inch":
+      unitOptions.precipUnit = "inch"
+      e.target.classList.add("now-mes");
+      document.getElementById("mm").classList.remove("now-mes");
+      break;
+  } fetchWeatherForLocation(loc)
+});
 
 //------------------------------------------------------------------------------------
 
@@ -26,8 +57,8 @@ unitsContainer.addEventListener("mouseenter", () => {
 });
 
 unitsDropdown.addEventListener("mouseleave", () => {
-  unitsDropdown.classList.add("display-none")
-})
+  unitsDropdown.classList.add("display-none");
+});
 
 unitsDropdown.addEventListener("click", (e) => {
   e.stopPropagation();
@@ -38,16 +69,16 @@ daysContainer.addEventListener("mouseenter", () => {
 });
 
 hourlyForecastDropdown.addEventListener("mouseleave", () => {
-  hourlyForecastDropdown.classList.add("display-none")
-})
+  hourlyForecastDropdown.classList.add("display-none");
+});
 
 hourlyForecastDropdown.addEventListener("click", (e) => {
-  e.stopPropagation()
-})
+  e.stopPropagation();
+});
 
 body.addEventListener("click", () => {
   unitsDropdown.classList.add("display-none");
-  hourlyForecastDropdown.classList.add("display-none")
+  hourlyForecastDropdown.classList.add("display-none");
 });
 
 //------------------------------------------------------------------------------------
@@ -73,9 +104,7 @@ async function getCoordinates(locationName) {
 }
 //------------------------------------------------------------------------------------
 
-async function getWeatherData(city, country, latitude, longitude) {
-  const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weathercode,rain,precipitation_probability,windspeed_10m&hourly=temperature_2m,weathercode,precipitation,windspeed_10m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,windspeed_10m_max,apparent_temperature_max&timezone=${timezone}`;
-
+async function getWeatherData(city, country, weatherUrl) {
   try {
     const response = await fetch(weatherUrl);
     const data = await response.json();
@@ -207,7 +236,7 @@ async function getWeatherData(city, country, latitude, longitude) {
 
 async function fetchWeatherForLocation(locationName) {
   const coord = await getCoordinates(locationName);
-
+  const weatherUrl = buildWeatherUrl (unitOptions, coord.latitude, coord.longitude)
   if (coord) {
     if (coord.city == undefined) {
       coord.city = locationName;
@@ -215,8 +244,7 @@ async function fetchWeatherForLocation(locationName) {
     const weather = await getWeatherData(
       coord.city,
       coord.country,
-      coord.latitude,
-      coord.longitude
+      weatherUrl
     );
   }
 }
@@ -238,6 +266,33 @@ function getWeatherIcon(code) {
 }
 
 //------------------------------------------------------------------------------------
+
+  function buildWeatherUrl(options = {}, latitude, longitude) {
+  let url = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}`;
+  url += "&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weathercode,rain,precipitation_probability,windspeed_10m";
+  url += "&hourly=temperature_2m,weathercode,precipitation,windspeed_10m,relative_humidity_2m";
+  url += "&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,windspeed_10m_max,apparent_temperature_max";
+  url += `&timezone=${timezone}`;
+
+  if (options.tempUnit) url += `&temperature_unit=${options.tempUnit}`;
+  if (options.windUnit) url += `&wind_speed_unit=${options.windUnit}`;
+  if (options.precipUnit) url += `&precipitation_unit=${options.precipUnit}`;
+
+  return url;
+}
+
+// Default
+let unitOptions = {
+  tempUnit: "celsius",         // or "fahrenheit"
+  windUnit: "kmh",             // or "mph"
+  precipUnit: "mm",            // or "inch"
+};
+
+
+
+
+//------------------------------------------------------------------------------------
+
 let loc = "Addis ababa";
 const n = String(loc);
 loc = n
