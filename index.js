@@ -6,8 +6,49 @@ const currentHumidity = document.getElementById("current-humidity");
 const currentPrecipitation = document.getElementById("current-precipitation");
 const currentFeels = document.getElementById("current-feels");
 const currentLocation = document.getElementById("current-location");
-const day1Max = document.getElementById("day-1-max");
-const day1min = document.getElementById("day-1-min");
+const unitsContainer = document.getElementById("unit-container");
+const unitsDropdown = document.getElementById("units-drop-down");
+const hourlyForecastDropdown = document.getElementById("hourly-forecast-dropdown")
+const daysContainer = document.getElementById("days-container")
+const body = document.querySelector("body")
+
+
+//------------------------------------------------------------------------------------
+
+  unitsDropdown.addEventListener("click", (e) => {
+
+  })
+
+//------------------------------------------------------------------------------------
+
+unitsContainer.addEventListener("mouseenter", () => {
+  unitsDropdown.classList.remove("display-none");
+});
+
+unitsDropdown.addEventListener("mouseleave", () => {
+  unitsDropdown.classList.add("display-none")
+})
+
+unitsDropdown.addEventListener("click", (e) => {
+  e.stopPropagation();
+});
+
+daysContainer.addEventListener("mouseenter", () => {
+  hourlyForecastDropdown.classList.remove("display-none");
+});
+
+hourlyForecastDropdown.addEventListener("mouseleave", () => {
+  hourlyForecastDropdown.classList.add("display-none")
+})
+
+hourlyForecastDropdown.addEventListener("click", (e) => {
+  e.stopPropagation()
+})
+
+body.addEventListener("click", () => {
+  unitsDropdown.classList.add("display-none");
+  hourlyForecastDropdown.classList.add("display-none")
+});
 
 //------------------------------------------------------------------------------------
 async function getCoordinates(locationName) {
@@ -33,7 +74,7 @@ async function getCoordinates(locationName) {
 //------------------------------------------------------------------------------------
 
 async function getWeatherData(city, country, latitude, longitude) {
-  const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,rain,precipitation_probability,windspeed_10m&hourly=temperature_2m,weathercode,precipitation,windspeed_10m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,windspeed_10m_max,apparent_temperature_max&timezone=${timezone}`;
+  const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,precipitation,weathercode,rain,precipitation_probability,windspeed_10m&hourly=temperature_2m,weathercode,precipitation,windspeed_10m,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,weathercode,precipitation_sum,windspeed_10m_max,apparent_temperature_max&timezone=${timezone}`;
 
   try {
     const response = await fetch(weatherUrl);
@@ -95,7 +136,8 @@ async function getWeatherData(city, country, latitude, longitude) {
     const times = data.hourly.time;
     const codes = data.hourly.weathercode;
     const dailyCodes = data.daily.weathercode;
-    console.log(dailyCodes);
+    const currentCode = data.current.weathercode;
+    currentTempImg.src = `${getWeatherIcon(currentCode)}`;
     let counter = now.getDay();
 
     for (let i = 0; i < 7; i++) {
@@ -127,9 +169,9 @@ async function getWeatherData(city, country, latitude, longitude) {
     let startIndex = times.findIndex((t) => new Date(t) >= now); // find closest forecast time >= now
 
     const step = 3;
-    const limit = 24;
-
-    for (let i = startIndex; i < limit; i += step) {
+    const limit = 8;
+    let count = 0;
+    for (let i = startIndex; count < limit && i < times.length; i += step) {
       const date = new Date(times[i]);
       const hour = date.getHours();
       const displayHour =
@@ -153,6 +195,7 @@ async function getWeatherData(city, country, latitude, longitude) {
       <p>${Math.round(hourlyTemp[i])}°</p>
     `;
       container.appendChild(card);
+      count++;
     }
 
     return data;

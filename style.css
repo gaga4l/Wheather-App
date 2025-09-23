@@ -377,7 +377,7 @@ figure {
   justify-content: space-between;
 }
 
-.unit-container {
+.unit-container, .days-container {
   position: relative;
   justify-content: space-between;
   align-items: center;
@@ -555,8 +555,11 @@ input:hover {
   margin-left: auto;
 }
 
-.units-drop-down {
+.display-none{
   display: none;
+}
+
+.units-drop-down {
   font-size: 12px;
   width: fit-content;
   padding: 0.5rem 1rem;
@@ -598,6 +601,10 @@ input:hover {
 .unit-container:hover .units-drop-down {
   display: block;
 }
+.days-container:hover .units-drop-down {
+  display: block;
+}
+/* unit-container == days-container */
 
 .search-drop-down {
   display: none;
@@ -619,7 +626,6 @@ div:focus {
 }
 
 .hourly-forecast-dropdown {
-  display: none;
   width: fit-content;
   padding: 0.5rem;
   background-color: hsl(243, 27%, 20%);

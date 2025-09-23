@@ -20,22 +20,24 @@
       <div>
         <img src="./assets/images/logo.svg" alt="weather now logo" />
       </div>
-      <div class="unit-container flex">
+      <div id="unit-container" class="unit-container flex">
         <img src="./assets/images/icon-units.svg" alt="setting icon" />
         <p>Units</p>
         <img src="./assets/images/icon-dropdown.svg" alt="Dropdown icon" />
 
-        <div class="units-drop-down">
-          <p class="measure now-mes">Switch to Imperial</p>
+        <div id="units-drop-down" class="units-drop-down display-none">
+          <p id="imperial" class="measure now-mes">Switch to Imperial</p>
           <p class="units-mes">Temprature</p>
-          <p class="measure now-mes">Celsius(C) <span>img</span></p>
-          <p class="measure">Fahrenhite(F)</p>
+          <p id="Celsius" class="measure now-mes">
+            Celsius(C) <span>img</span>
+          </p>
+          <p id="fahrenhite" class="measure">Fahrenhite(F)</p>
           <p class="units-mes">Wind speed</p>
-          <p class="measure now-mes">km/h</p>
-          <p class="measure">mph</p>
+          <p id="km/h" class="measure now-mes">km/h</p>
+          <p id="mph" class="measure">mph</p>
           <p class="units-mes">precipitation</p>
-          <p class="measure now-mes">milimeters(mm)</p>
-          <p class="measure">kilometers(km)</p>
+          <p id="mm" class="measure now-mes">milimeters(mm)</p>
+          <p id="km" class="measure">kilometers(km)</p>
         </div>
       </div>
     </header>
@@ -168,29 +170,34 @@
         <div id="hourly-forecast-container" class="hourly-forecast grid">
           <div class="flex">
             <p>Hourly forecast</p>
-            <div class="unit-container flex">
+
+            <div id="days-container" class="days-container flex">
               <p>Tuesday</p>
               <img
                 src="./assets/images/icon-dropdown.svg"
                 alt="Dropdown icon"
               />
+              <div
+                id="hourly-forecast-dropdown"
+                class="hourly-forecast-dropdown display-none"
+              >
+                <p>Monday</p>
+
+                <p>Monday</p>
+
+                <p>Monday</p>
+
+                <p>Monday</p>
+
+                <p>Monday</p>
+
+                <p>Monday</p>
+
+                <p>Monday</p>
+              </div>
             </div>
           </div>
-          <div class="hourly-forecast-dropdown">
-            <p>Monday</p>
 
-            <p>Monday</p>
-
-            <p>Monday</p>
-
-            <p>Monday</p>
-
-            <p>Monday</p>
-
-            <p>Monday</p>
-
-            <p>Monday</p>
-          </div>
           <!-- <div class="items flex">
             <div>
               <img src="./assets/images/icon-rain.webp" alt="icon-rain" />
