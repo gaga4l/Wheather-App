@@ -51,7 +51,7 @@ unitsDropdown.addEventListener("click", (e) => {
       document.getElementById("mm").classList.remove("now-mes");
       break;
   }
-  fetchWeatherForLocation(loc)
+  fetchWeatherForLocation(loc);
 });
 
 //------------------------------------------------------------------------------------
@@ -106,6 +106,68 @@ async function getCoordinates(locationName) {
     console.error("Error: ", error);
   }
 }
+
+//------------------------------------------------------------------------------------
+
+const searchBar = document.getElementById("search-input");
+const searchResults = document.getElementById("search-dropdown");
+
+// Fetch location suggestions
+async function getLocationSuggestions(query) {
+  if (!query) {
+    searchResults.innerHTML = "";
+    return;
+  }
+
+  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=6`;
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    if (!data.results) {
+      searchResults.innerHTML = "<p>No results found</p>";
+      return;
+    }
+
+    // Render top 6 results
+    searchResults.innerHTML = data.results
+      .slice(0, 6)
+      .map(
+        (place) => `
+        <div class="search-item" data-lat="${place.latitude}" data-lon="${place.longitude}">
+          <p>${place.name}, ${place.country}<p>
+        </div>`
+      )
+      .join("");
+
+    // Add click listeners to suggestions
+    document.querySelectorAll(".search-item").forEach((item) => {
+      item.addEventListener("click", () => {
+        const lat = item.dataset.lat;
+        const lon = item.dataset.lon;
+        const city = item.textContent.split(",")[0];
+        const country = item.textContent.split(",")[1].trim();
+
+        searchResults.innerHTML = ""; // clear dropdown
+        searchBar.value = city +", "+ country; // fill input
+        fetchWeatherForLocation(city); // your existing function
+      });
+    });
+  } catch (error) {
+    console.error("Error fetching suggestions:", error);
+  }
+}
+
+// Add typing listener with debounce
+let debounceTimeout;
+searchBar.addEventListener("input", () => {
+  clearTimeout(debounceTimeout);
+  debounceTimeout = setTimeout(() => {
+    getLocationSuggestions(searchBar.value);
+  }, 300); // wait 300ms after typing
+});
+
+
 //------------------------------------------------------------------------------------
 
 async function getWeatherData(city, country, weatherUrl) {
@@ -117,14 +179,18 @@ async function getWeatherData(city, country, weatherUrl) {
 
     currentTemp.textContent = Math.round(data.current.temperature_2m) + "°";
 
-    currentWindSpeed.textContent = Math.round(data.current.windspeed_10m) +" " + unitOptions.windUnit;
+    currentWindSpeed.textContent =
+      Math.round(data.current.windspeed_10m) + " " + unitOptions.windUnit;
 
-    currentHumidity.textContent = Math.round(data.current.relative_humidity_2m) + "%";
+    currentHumidity.textContent =
+      Math.round(data.current.relative_humidity_2m) + "%";
 
-    currentPrecipitation.textContent = Math.round(data.current.precipitation) + unitOptions.precipUnit;
-    currentFeels.textContent = Math.round(data.current.apparent_temperature) + "°";
+    currentPrecipitation.textContent =
+      Math.round(data.current.precipitation) + unitOptions.precipUnit;
+    currentFeels.textContent =
+      Math.round(data.current.apparent_temperature) + "°";
 
-    const days = ["Sun", "Mon", "Tue", "wed", "Thrus", "Fri", "Sat"];
+    const days = ["Sun", "Mon", "Tue", "wed", "Thru", "Fri", "Sat"];
 
     const now = new Date();
     todayDate.textContent = now.toLocaleDateString("en-us", {
@@ -173,19 +239,20 @@ async function getWeatherData(city, country, weatherUrl) {
     currentTempImg.src = `${getWeatherIcon(currentCode)}`;
     let counter = now.getDay();
     const dailyForecastContainer = document.getElementById(
-            "daily-forecast-container"
-          );
-          dailyForecastContainer.innerHTML = ""; // clear old cards first
+      "daily-forecast-container"
+    );
+    dailyForecastContainer.innerHTML = ""; // clear old cards first
+    hourlyForecastDropdown.innerHTML = "";
     for (let i = 0; i < 7; i++) {
       const dailyIcon = getWeatherIcon(dailyCodes[i]);
-      
 
+      const today = document.createElement("p");
       const dailyCard = document.createElement("div");
       const dayMax = Math.round(data.daily.temperature_2m_max[i]);
       const dayMin = Math.round(data.daily.temperature_2m_min[i]);
       dailyCard.innerHTML = `
           <div>
-            <p id="day-1">${days[counter]}</p>
+            <p id="day-${i}">${days[counter]}</p>
             <img src="${dailyIcon}" alt="weather-icon" />
             <div class="degree-range flex">
               <p id="day-${i}-max">${dayMax}°</p>
@@ -193,6 +260,15 @@ async function getWeatherData(city, country, weatherUrl) {
             </div>
           </div>`;
 
+      if (i !== 0) {
+        today.addEventListener("click", () => {
+          showHourlyForDay(i, data);
+        });
+      }
+
+      today.textContent = `${days[counter]}`;
+
+      hourlyForecastDropdown.appendChild(today);
       dailyForecastContainer.appendChild(dailyCard);
       const s = now.getDay();
       counter++;
@@ -202,9 +278,11 @@ async function getWeatherData(city, country, weatherUrl) {
     }
 
     const container = document.getElementById("hourly-forecast-container");
-    container.innerHTML = ""; // clear before appending
+    Array.from(container.children)
+      .slice(1) // skip first child
+      .forEach((child) => child.remove());
+
     let startIndex = times.findIndex((t) => new Date(t) >= now); // find closest forecast time >= now
-    container.innerHTML = ""; // clear before appending
 
     const step = 3;
     const limit = 8;
@@ -230,7 +308,9 @@ async function getWeatherData(city, country, weatherUrl) {
       <p>${displayHour}</p>
       <p>${Math.round(hourlyTemp[i])}°</p>
     `;
+
       container.appendChild(card);
+
       count++;
     }
 
@@ -239,6 +319,55 @@ async function getWeatherData(city, country, weatherUrl) {
     console.error("Error: ", error);
   }
 }
+
+//------------------------------------------------------------------------------------
+
+function showHourlyForDay(dayIndex, data) {
+  const container = document.getElementById("hourly-forecast-container");
+
+  // keep first child if needed
+  Array.from(container.children)
+    .slice(1)
+    .forEach((c) => c.remove());
+
+  const times = data.hourly.time;
+  const temps = data.hourly.temperature_2m;
+  const codes = data.hourly.weathercode;
+
+  // get the date string for that day (YYYY-MM-DD)
+  const selectedDate = data.daily.time[dayIndex];
+
+  // filter hourly times belonging to that day
+  const filteredIndexes = times
+    .map((t, idx) => ({ t, idx }))
+    .filter(({ t }) => t.startsWith(selectedDate))
+    .map(({ idx }) => idx);
+
+  // show max 8 slots every 3 hours
+  let count = 0;
+  for (let j = 0; j < filteredIndexes.length && count < 8; j += 3) {
+    const i = filteredIndexes[j];
+    const date = new Date(times[i]);
+    const hour = date.getHours();
+    const displayHour =
+      hour === 0
+        ? "12 AM"
+        : hour < 12
+        ? hour + " AM"
+        : (hour - 12 || 12) + " PM";
+
+    const card = document.createElement("div");
+    card.className = "items flex flex-col items-center";
+    card.innerHTML = `
+      <div><img src="${getWeatherIcon(codes[i])}" alt="weather-icon" /></div>
+      <p>${displayHour}</p>
+      <p>${Math.round(temps[i])}°</p>
+    `;
+    container.appendChild(card);
+    count++;
+  }
+}
+
 //------------------------------------------------------------------------------------
 
 async function fetchWeatherForLocation(locationName) {
@@ -315,4 +444,4 @@ loc = n
   )
   .join(" ");
 
-  fetchWeatherForLocation(loc)
+fetchWeatherForLocation(loc);

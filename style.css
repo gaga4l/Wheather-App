@@ -605,21 +605,24 @@ input:hover {
   display: block;
 }
 /* unit-container == days-container */
-
-.search-drop-down {
-  display: none;
+.search{
+  position: relative;
+}
+.search-dropdown {
+  position: absolute;
+  top: 3rem;
   width: inherit;
   padding: 0.5rem;
   background-color: hsl(243, 27%, 20%);
   border-radius: 10px;
-  flex-direction: column;
+  display: grid;
   gap: 3px;
 }
-.search-drop-down div {
+.search-dropdown div {
   padding: 4px;
   text-align: left;
 }
-.search-drop-down div:hover,
+.search-dropdown div:hover,
 div:focus {
   background-color: hsl(243, 23%, 30%);
   border-radius: 5px;
@@ -655,6 +658,7 @@ p:focus {
     top: 4rem;
   }
   .search {
+
     max-width: 70%;
     margin-inline: auto;
     grid-template-columns: 2fr 1fr;
