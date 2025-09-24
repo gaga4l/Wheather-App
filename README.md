@@ -35,7 +35,7 @@ Users should be able to:
 
 - My Solution
 
-![](./assets/images/image.png)
+![Screenshot](./assets/images/image.png)
 
 - Given Design
 
