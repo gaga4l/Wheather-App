@@ -34,7 +34,7 @@
   /* font-families */
   --ff-dmsans: "DM Sans", sans-serif;
   --ff-baricolage-grotesque: "Bricolage Grotesque", sans-serif;
-  
+
   --ff-serif: "Bellefair", serif;
   --ff-sans-cond: "Barlow Condensed", sans-serif;
   --ff-sans-normal: "Barlow", sans-serif;
@@ -377,7 +377,7 @@ figure {
 .primary-header {
   justify-content: space-between;
 }
-#logo{
+#logo {
   cursor: pointer;
 }
 
@@ -430,7 +430,7 @@ figure {
   font-size: 1rem;
 }
 
-.no-result{
+.no-result {
   font-size: var(--fs-700);
   margin: 1rem;
   color: hsl(240, 6%, 70%);
@@ -443,17 +443,17 @@ figure {
   color: var(--clr-neutral-300);
   font-weight: 500;
 }
-.api-error img{
+.api-error img {
   justify-self: center;
   margin-bottom: 1rem;
 }
-.api-error h1{
+.api-error h1 {
   font-weight: 800;
 }
-.api-error p{
+.api-error p {
   color: hsl(240, 6%, 70%);
 }
-.api-error button{
+.api-error button {
   margin-top: 1rem;
   border: 0;
   color: hsl(0, 0%, 100%);
@@ -462,12 +462,12 @@ figure {
   border-radius: 3px;
   cursor: pointer;
 }
-.api-error button:hover{
+.api-error button:hover {
   transform: translateY(2px);
-  color: hsla(0, 0%, 100%, .9);
-  background-color: hsla(243, 23%, 30%, .8);
+  color: hsla(0, 0%, 100%, 0.9);
+  background-color: hsla(243, 23%, 30%, 0.8);
 }
-.api-error{
+.api-error {
   text-align: center;
   margin: 2rem 1rem;
   position: absolute;
@@ -484,10 +484,10 @@ figure {
   font-size: var(--fs-700);
   border-radius: 10px;
   font-family: var(--ff-dmsans);
-  cursor:pointer;
+  cursor: pointer;
   transition: transform 0.2s ease-in-out;
 }
-.btn:hover{
+.btn:hover {
   background-color: var(--clr-blue-700);
   transform: translateY(1.5px);
 }
@@ -648,8 +648,8 @@ figure {
 .measure:focus {
   background-color: hsl(243, 23%, 30%);
 }
-.measure:focus{
-  border: 1px solid hsla(240, 6%, 70%, .7);
+.measure:focus {
+  border: 1px solid hsla(240, 6%, 70%, 0.7);
 }
 
 .units-mes {
@@ -720,12 +720,8 @@ div:focus {
 p:focus {
   background-color: hsla(243, 23%, 30%, 0.7);
 }
-.hourly-forecast-dropdown p:focus{
-  border: 1px solid hsla(240, 6%, 70%, .7);
-}
-
-.daily-card:hover{
-  transform: translateY(-1rem);
+.hourly-forecast-dropdown p:focus {
+  border: 1px solid hsla(240, 6%, 70%, 0.7);
 }
 
 @media screen and (min-width: 35rem) {
