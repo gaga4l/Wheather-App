@@ -46,20 +46,18 @@
       <h1 class="title ff-dmsans">How's the sky looking today?</h1>
       <div class="search grid">
         <div id="parent" class="parent">
-          <input
-          id="search-input"
-          type="text"
-          class="input"
-          placeholder="Search for a place...."
-        />
-        <div id="search-dropdown" class="search-dropdown">
-          
+          <div class="input-wrapper">
+            <img
+              src="./assets/images/icon-search.svg"
+              alt="search"
+              class="search-icon"
+            />
+            <input id="search-input" type="text" class="input" placeholder="Search...." />
+          </div>
+          <div id="search-dropdown" class="search-dropdown"></div>
         </div>
-      </div>
-        
-        <button id="search-btn" class="btn">Search</button>
 
-        
+        <button id="search-btn" class="btn">Search</button>
       </div>
 
       <div class="wheather-grid-container">

@@ -125,13 +125,14 @@ async function getLocationSuggestions(query) {
     searchResults.innerHTML = "";
     return;
   }
+  
   const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
     query
   )}&count=6`;
   try {
     const response = await fetch(url);
     const data = await response.json();
-
+    searchResults.classList.add("small-padding")
     if (!data.results) {
       searchResults.innerHTML = "<p>No results found</p>";
       return;
@@ -152,10 +153,11 @@ async function getLocationSuggestions(query) {
       item.addEventListener("click", () => {
         const lat = item.dataset.lat;
         const lon = item.dataset.lon;
-        const city = item.textContent.split(",")[0];
+        const city = item.textContent.split(",")[0].trim();
         const country = item.textContent.split(",")[1].trim();
 
         searchResults.innerHTML = ""; // clear dropdown
+        searchResults.classList.remove("small-padding")
         searchBar.value = city + ", " + country; 
         fetchWeatherForLocation(city);
       });
