@@ -39,8 +39,7 @@ Users should be able to:
 
 - Given Design
 
-![](./design/desktop-design-imperial.jpg)
-
+![Screenshot](./design/desktop-design-imperial.jpg)
 
 
 ### Links
