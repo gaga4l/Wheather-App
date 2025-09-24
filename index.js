@@ -9,12 +9,14 @@ const currentHumidity = document.getElementById("current-humidity");
 const currentPrecipitation = document.getElementById("current-precipitation");
 const unitsContainer = document.getElementById("unit-container");
 const unitsDropdown = document.getElementById("units-drop-down");
-const hourlyForecastDropdown = document.getElementById("hourly-forecast-dropdown");
+const hourlyForecastDropdown = document.getElementById(
+  "hourly-forecast-dropdown"
+);
 const daysContainer = document.getElementById("days-container");
 let currentLatitude = null;
 let currentLongitude = null;
-let loc = "Addis ababa";
-
+let loc = "new york";
+getApproxLocation();
 //------------------------------------------------------------------------------------
 // Change Unit measurment from one unit to another(functionality & display)
 
@@ -55,6 +57,26 @@ unitsDropdown.addEventListener("click", (e) => {
 });
 
 //------------------------------------------------------------------------------------
+
+async function getApproxLocation() {
+  const cachedCity = localStorage.getItem("userCity");
+  if (cachedCity) {
+    loc = cachedCity;
+    fetchWeatherForLocation(loc)
+    return;
+  }
+  try {
+    const response = await fetch("https://ipwhois.app/json/");
+    const data = await response.json();
+    loc = data.city || "new york"; // fallback
+    localStorage.setItem("userCity", loc); // cache it
+    fetchWeatherForLocation(loc);
+  } catch (error) {
+    console.error("IP location error:", error);
+    loc = "new york "; // fallback
+  }
+}
+//------------------------------------------------------------------------------------
 // Unit measurments and Days dropdown on the mouse enter and leave
 
 unitsContainer.addEventListener("mouseenter", () => {
@@ -89,7 +111,6 @@ body.addEventListener("click", () => {
 //------------------------------------------------------------------------------------
 // Get country, city, latitude and longitude (Coordinates).
 
-
 async function getCoordinates(locationName) {
   const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
     locationName
@@ -115,7 +136,6 @@ async function getCoordinates(locationName) {
 // Listen for input, get 6 results related to that input,
 // listen for those results on click inorder to get their coordinates
 
-
 const searchBar = document.getElementById("search-input");
 const searchResults = document.getElementById("search-dropdown");
 
@@ -125,14 +145,14 @@ async function getLocationSuggestions(query) {
     searchResults.innerHTML = "";
     return;
   }
-  
+
   const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
     query
   )}&count=6`;
   try {
     const response = await fetch(url);
     const data = await response.json();
-    searchResults.classList.add("small-padding")
+    searchResults.classList.add("small-padding");
     if (!data.results) {
       searchResults.innerHTML = "<p>No results found</p>";
       return;
@@ -157,8 +177,8 @@ async function getLocationSuggestions(query) {
         const country = item.textContent.split(",")[1].trim();
 
         searchResults.innerHTML = ""; // clear dropdown
-        searchResults.classList.remove("small-padding")
-        searchBar.value = city + ", " + country; 
+        searchResults.classList.remove("small-padding");
+        searchBar.value = city + ", " + country;
         fetchWeatherForLocation(city);
       });
     });
@@ -179,34 +199,37 @@ searchBar.addEventListener("input", () => {
 //------------------------------------------------------------------------------------
 // Current temp main display, current temp details, houlry forecast, days dropdown, daily predictions
 
-
 async function getWeatherData(city, country, weatherUrl) {
-    const days = ["Sun", "Mon", "Tue", "wed", "Thru", "Fri", "Sat"];
-    const now = new Date();
-try {
+  const days = ["Sun", "Mon", "Tue", "wed", "Thru", "Fri", "Sat"];
+  const now = new Date();
+  try {
     const response = await fetch(weatherUrl);
     const data = await response.json();
 
-// Current temp main display
-     currentLocation.textContent = `${city}, ${country}`;
-     currentTemp.textContent = Math.round(data.current.temperature_2m) + "°";
+    // Current temp main display
+    currentLocation.textContent = `${city}, ${country}`;
+    currentTemp.textContent = Math.round(data.current.temperature_2m) + "°";
     const currentCode = data.current.weathercode;
     currentTempImg.src = `${getWeatherIcon(currentCode)}`;
 
-     todayDate.textContent = now.toLocaleDateString("en-us", {
+    todayDate.textContent = now.toLocaleDateString("en-us", {
       weekday: "long",
       day: "numeric",
       month: "short",
       year: "numeric",
     });
 
-// Current temp details
-    currentWindSpeed.textContent = Math.round(data.current.windspeed_10m) + " " + unitOptions.windUnit;
-    currentHumidity.textContent = Math.round(data.current.relative_humidity_2m) + "%";
-    currentPrecipitation.textContent = Math.round(data.current.precipitation) + unitOptions.precipUnit;
-    currentFeels.textContent = Math.round(data.current.apparent_temperature) + "°";
+    // Current temp details
+    currentWindSpeed.textContent =
+      Math.round(data.current.windspeed_10m) + " " + unitOptions.windUnit;
+    currentHumidity.textContent =
+      Math.round(data.current.relative_humidity_2m) + "%";
+    currentPrecipitation.textContent =
+      Math.round(data.current.precipitation) + unitOptions.precipUnit;
+    currentFeels.textContent =
+      Math.round(data.current.apparent_temperature) + "°";
 
-// Hourly Forecast details
+    // Hourly Forecast details
     const hourlyTemp = data.hourly.temperature_2m;
     const hourlyPrecipitation = data.hourly.precipitation;
     const hourlyWindSpeed = data.hourly.windspeed_10m;
@@ -233,7 +256,7 @@ try {
           : hour < 12
           ? hour + " AM"
           : (hour - 12 || 12) + " PM";
-     // pick icon path from weather code
+      // pick icon path from weather code
       const icon = getWeatherIcon(codes[i]);
       const card = document.createElement("div");
       card.className = "items flex flex-col items-center";
@@ -248,9 +271,8 @@ try {
       container.appendChild(card);
       count++;
     }
-      
 
-// Daily Forecast details
+    // Daily Forecast details
     const dailyForecastContainer = document.getElementById(
       "daily-forecast-container"
     );
@@ -265,7 +287,7 @@ try {
       const dayMax = Math.round(data.daily.temperature_2m_max[i]);
       const dayMin = Math.round(data.daily.temperature_2m_min[i]);
       const dailyIcon = getWeatherIcon(dailyCodes[i]);
-      
+
       dailyCard.innerHTML = `
           <div>
             <p id="day-${i}">${days[counter]}</p>
@@ -281,7 +303,7 @@ try {
         today.addEventListener("click", () => {
           showHourlyForDay(i, data);
         });
-      }      
+      }
       today.textContent = `${days[counter]}`;
 
       hourlyForecastDropdown.appendChild(today);
@@ -405,14 +427,14 @@ let unitOptions = {
 
 //-----------------------------------------------------------------------------------------
 
-const n = String(loc);
-loc = n
-  .split(" ") 
-  .map(
-    (word) =>
-      word.charAt(0).toUpperCase() + 
-      word.slice(1).toLowerCase() 
-  )
-  .join(" ");
+// const n = String(loc);
+// loc = n
+//   .split(" ")
+//   .map(
+//     (word) =>
+//       word.charAt(0).toUpperCase() +
+//       word.slice(1).toLowerCase()
+//   )
+//   .join(" ");
 
-fetchWeatherForLocation(loc);
+// fetchWeatherForLocation(loc);
