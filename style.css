@@ -605,18 +605,18 @@ input:hover {
 .days-container:hover .units-drop-down {
   display: block;
 }
-/* unit-container == days-container */
-.search {
+.parent{
   position: relative;
 }
 .search-dropdown {
+  width: inherit;
   position: absolute;
   top: 3rem;
-  width: inherit;
+  left: 0;
+  right: 0;
   padding: 0.5rem;
   background-color: hsl(243, 27%, 20%);
   border-radius: 10px;
-  display: grid;
   gap: 3px;
 }
 .search-dropdown div {
@@ -627,6 +627,7 @@ input:hover {
 div:focus {
   background-color: hsl(243, 23%, 30%);
   border-radius: 5px;
+  border: 1px solid hsla(240, 6%, 70%, .5);
 }
 
 .hourly-forecast-dropdown {
@@ -648,6 +649,7 @@ div:focus {
 .hourly-forecast-dropdown p:hover,
 p:focus {
   background-color: hsla(243, 23%, 30%, 0.7);
+  
 }
 
 @media screen and (min-width: 35rem) {

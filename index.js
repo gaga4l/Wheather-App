@@ -125,7 +125,6 @@ async function getLocationSuggestions(query) {
     searchResults.innerHTML = "";
     return;
   }
-
   const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
     query
   )}&count=6`;
@@ -148,7 +147,6 @@ async function getLocationSuggestions(query) {
         </div>`
       )
       .join("");
-
     // Add click listeners to suggestions
     document.querySelectorAll(".search-item").forEach((item) => {
       item.addEventListener("click", () => {
