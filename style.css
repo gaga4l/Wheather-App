@@ -426,7 +426,6 @@ figure {
   font-size: 1rem;
 }
 
-
 .input:focus,
 .input:hover {
   border: 1px solid hsl(240, 6%, 70%);
@@ -648,18 +647,23 @@ div:focus {
 
 .hourly-forecast-dropdown {
   width: fit-content;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem;
   background-color: hsl(243, 27%, 20%);
   border-radius: 0.3rem;
   position: absolute;
   right: 5%;
   top: 2.5rem;
   z-index: 100;
+  text-align: left;
 }
 
 .hourly-forecast-dropdown p {
   padding: 2px 3rem 2px 3px;
   border-radius: 3px;
+}
+.now-day {
+  background-color: hsla(243, 23%, 30%, 0.4);
+  color: hsl(240, 6%, 70%);
 }
 
 .hourly-forecast-dropdown p:hover,
