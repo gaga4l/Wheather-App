@@ -33,18 +33,21 @@ Users should be able to:
 
 ### Screenshot
 
-- Given Design
-
-![](./design/desktop-design-imperial.jpg)
-
 - My Solution
 
 ![](./assets/images/image.png)
 
+- Given Design
+
+![](./design/desktop-design-imperial.jpg)
+
+
+
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Live Site URL: [Live](https://your-live-site-url.com)
+- Repository URL: [Repo](https://your-solution-url.com)
+
 
 ## My process
 
@@ -59,14 +62,14 @@ Users should be able to:
 
 ### Useful resources
 
-- [Example resource 1](https://api.open-meteo.com) - This helped me for XYZ reason. I really liked this pattern and will use it going forward.
-- [Example resource 2](https://ipwhois.app) - This is an amazing article which helped me finally understand XYZ. I'd recommend it to anyone still learning this concept.
+- [https://api.open-meteo.com](https://api.open-meteo.com) - This helped me for XYZ reason. I really liked this pattern and will use it going forward.
+- [https://ipwhois.app](https://ipwhois.app) - This is an amazing article which helped me finally understand XYZ. I'd recommend it to anyone still learning this concept.
 
 ## Author
 
-- Website - [Add your name here](https://www.your-site.com)
-- Frontend Mentor - [@yourusername](https://www.frontendmentor.io/profile/yourusername)
-- Twitter - [@yourusername](https://www.twitter.com/yourusername)
+- Github - [Gaga](https://github.com/gaga4l)
+- Linkedin - [Gaga](https://linkedin.com/gaga4l)
+- Twitter - [Gaga](https://www.twitter.com/lelisa_8)
 
 
 
