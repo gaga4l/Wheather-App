@@ -41,8 +41,14 @@
         </div>
       </div>
     </header>
+    <div id="api-error" class="api-error display-none">
+      <img src="./assets/images/icon-error.svg" alt="error icon">
+      <h1>Something went wrong</h1>
+      <p>We couldn't connect to server(API error). Please try again in a few moments!</p>
+      <button id="retry-btn">Retry</button>
+    </div>
 
-    <main class="main">
+    <main id="main" class="main">
       <h1 class="title ff-dmsans">How's the sky looking today?</h1>
       <div class="search grid">
         <div id="parent" class="parent">
@@ -64,8 +70,8 @@
 
         <button id="search-btn" class="btn">Search</button>
       </div>
-
-      <div class="wheather-grid-container">
+      <p id="no-result" class="no-result display-none">No search result found!</p>
+      <div id="wheather-grid-container" class="wheather-grid-container">
         <div class="show">
           <div>
             <p id="current-location" class="location"></p>

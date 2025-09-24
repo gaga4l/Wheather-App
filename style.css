@@ -34,6 +34,7 @@
   /* font-families */
   --ff-dmsans: "DM Sans", sans-serif;
   --ff-baricolage-grotesque: "Bricolage Grotesque", sans-serif;
+  
   --ff-serif: "Bellefair", serif;
   --ff-sans-cond: "Barlow Condensed", sans-serif;
   --ff-sans-normal: "Barlow", sans-serif;
@@ -429,6 +430,11 @@ figure {
   font-size: 1rem;
 }
 
+.no-result{
+  font-size: var(--fs-700);
+  margin: 1rem;
+  color: hsl(240, 6%, 70%);
+}
 .input:focus,
 .input:hover {
   border: 1px solid hsl(240, 6%, 70%);
@@ -436,6 +442,38 @@ figure {
 .input::placeholder {
   color: var(--clr-neutral-300);
   font-weight: 500;
+}
+.api-error img{
+  justify-self: center;
+  margin-bottom: 1rem;
+}
+.api-error h1{
+  font-weight: 800;
+}
+.api-error p{
+  color: hsl(240, 6%, 70%);
+}
+.api-error button{
+  margin-top: 1rem;
+  border: 0;
+  color: hsl(0, 0%, 100%);
+  background-color: hsl(243, 23%, 30%);
+  padding: 3px 15px;
+  border-radius: 3px;
+  cursor: pointer;
+}
+.api-error button:hover{
+  transform: translateY(2px);
+  color: hsla(0, 0%, 100%, .9);
+  background-color: hsla(243, 23%, 30%, .8);
+}
+.api-error{
+  text-align: center;
+  margin: 2rem 1rem;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .btn {
@@ -447,6 +485,11 @@ figure {
   border-radius: 10px;
   font-family: var(--ff-dmsans);
   cursor:pointer;
+  transition: transform 0.2s ease-in-out;
+}
+.btn:hover{
+  background-color: var(--clr-blue-700);
+  transform: translateY(1.5px);
 }
 
 .wheather-grid-container {
@@ -593,7 +636,7 @@ figure {
   background: url(./assets/images/icon-checkmark.svg);
   background-repeat: no-repeat;
   background-position: 7rem;
-  background-color: hsla(243, 23%, 30%, 0.7);
+  background-color: hsla(243, 23%, 30%, 0.5);
   border-radius: 3px;
 }
 .measure {
@@ -603,7 +646,10 @@ figure {
 
 .measure:hover,
 .measure:focus {
-  background-color: hsla(243, 23%, 30%, 0.7);
+  background-color: hsl(243, 23%, 30%);
+}
+.measure:focus{
+  border: 1px solid hsla(240, 6%, 70%, .7);
 }
 
 .units-mes {
@@ -673,6 +719,13 @@ div:focus {
 .hourly-forecast-dropdown p:hover,
 p:focus {
   background-color: hsla(243, 23%, 30%, 0.7);
+}
+.hourly-forecast-dropdown p:focus{
+  border: 1px solid hsla(240, 6%, 70%, .7);
+}
+
+.daily-card:hover{
+  transform: translateY(-1rem);
 }
 
 @media screen and (min-width: 35rem) {

@@ -15,6 +15,11 @@ const hourlyForecastDropdown = document.getElementById(
 const daysContainer = document.getElementById("days-container");
 let currentLatitude = null;
 let currentLongitude = null;
+const noResult = document.getElementById("no-result");
+const weatherGridContainer = document.getElementById("wheather-grid-container");
+const main = document.getElementById("main");
+const apiError = document.getElementById("api-error");
+const retryBtn = document.getElementById("retry-btn");
 const days = ["Sun", "Mon", "Tue", "wed", "Thru", "Fri", "Sat"];
 const daysLong = [
   "Sunday",
@@ -25,15 +30,20 @@ const daysLong = [
   "Friday",
   "Saturday",
 ];
-const logo = document.getElementById("logo")
+const searchBtn = document.getElementById("search-btn");
+const searchBar = document.getElementById("search-input");
+const searchResults = document.getElementById("search-dropdown");
+const logo = document.getElementById("logo");
 const now = new Date();
 let loc = "new york";
 getApproxLocation();
 
-
 logo.addEventListener("click", () => {
-  location.reload()
-})
+  location.reload();
+});
+retryBtn.addEventListener("click", () => {
+  location.reload;
+});
 
 //------------------------------------------------------------------------------------
 // Change Unit measurment from one unit to another(functionality & display)
@@ -72,6 +82,12 @@ unitsDropdown.addEventListener("click", (e) => {
       break;
   }
   fetchWeatherForLocation(loc);
+});
+
+//------------------------------------------------------------------------------------
+
+searchBtn.addEventListener("click", () => {
+  fetchWeatherForLocation(searchBar.value);
 });
 
 //------------------------------------------------------------------------------------
@@ -120,10 +136,16 @@ hourlyForecastDropdown.addEventListener("mouseleave", () => {
 hourlyForecastDropdown.addEventListener("click", (e) => {
   e.stopPropagation();
 });
+searchBar.addEventListener("click", (e) => {
+  e.stopPropagation();
+  getLocationSuggestions(searchBar.value);
+});
 
 body.addEventListener("click", () => {
   unitsDropdown.classList.add("display-none");
   hourlyForecastDropdown.classList.add("display-none");
+  searchResults.textContent = "";
+  searchResults.classList.remove("small-padding");
 });
 
 //------------------------------------------------------------------------------------
@@ -142,10 +164,14 @@ async function getCoordinates(locationName) {
       const { country, name, latitude, longitude } = data.results[0];
       return { country, name, latitude, longitude };
     } else {
+      noResult.classList.remove("display-none");
+      weatherGridContainer.classList.add("display-none");
       console.log("location not found");
       return null;
     }
   } catch (error) {
+    main.classList.add("display-none");
+    apiError.classList.remove("display-none");
     console.error("Error: ", error);
   }
 }
@@ -154,15 +180,10 @@ async function getCoordinates(locationName) {
 // Listen for input, get 6 results related to that input,
 // listen for those results on click inorder to get their coordinates
 
-const searchBar = document.getElementById("search-input");
-const searchResults = document.getElementById("search-dropdown");
-
-// Fetch location suggestions
 async function getLocationSuggestions(query) {
   if (!query) {
     searchResults.innerHTML = "";
-        searchResults.classList.remove("small-padding");
-
+    searchResults.classList.remove("small-padding");
     return;
   }
 
@@ -187,7 +208,7 @@ async function getLocationSuggestions(query) {
         </div>`
       )
       .join("");
-        searchResults.classList.add("small-padding");
+    searchResults.classList.add("small-padding");
     // Add click listeners to suggestions
     document.querySelectorAll(".search-item").forEach((item) => {
       item.addEventListener("click", () => {
@@ -203,6 +224,8 @@ async function getLocationSuggestions(query) {
       });
     });
   } catch (error) {
+    main.classList.add("display-none");
+    apiError.classList.remove("display-none");
     console.error("Error fetching suggestions:", error);
   }
 }
@@ -252,6 +275,8 @@ async function getWeatherData(city, country, weatherUrl) {
 
     return data;
   } catch (error) {
+    main.classList.add("display-none");
+    apiError.classList.remove("display-none");
     console.error("Error: ", error);
   }
 }
@@ -275,7 +300,7 @@ function dailyForecast(data) {
     const dailyIcon = getWeatherIcon(dailyCodes[i]);
 
     dailyCard.innerHTML = `
-          <div>
+          <div class="daily-card">
             <p id="day-${i}">${days[counter]}</p>
             <img src="${dailyIcon}" alt="weather-icon" />
             <div class="degree-range flex">
@@ -286,26 +311,25 @@ function dailyForecast(data) {
 
     // Change hourly forecast when the day change
     if (i === 0) {
-      today.classList.add("now-day")
+      today.classList.add("now-day");
       today.textContent = `Today`;
-      document.getElementById("today").textContent = `${today.textContent}`
+      document.getElementById("today").textContent = `${today.textContent}`;
       today.addEventListener("click", () => {
-        document.getElementById("today").textContent = `${today.textContent}`
-        document.querySelector(".now-day").classList.remove("now-day")
-        today.classList.add("now-day")
+        document.getElementById("today").textContent = `${today.textContent}`;
+        document.querySelector(".now-day").classList.remove("now-day");
+        today.classList.add("now-day");
         hourlyForecast(data);
       });
     } else {
       today.textContent = `${daysLong[counter]}`;
       today.addEventListener("click", () => {
-        document.getElementById("today").textContent = `${today.textContent}`
-        document.querySelector(".now-day").classList.remove("now-day")
-        today.classList.add("now-day")
+        document.getElementById("today").textContent = `${today.textContent}`;
+        document.querySelector(".now-day").classList.remove("now-day");
+        today.classList.add("now-day");
         showHourlyForDay(i, data);
       });
     }
 
-   
     hourlyForecastDropdown.appendChild(today);
     dailyForecastContainer.appendChild(dailyCard);
     const s = now.getDay();
@@ -411,6 +435,10 @@ function showHourlyForDay(dayIndex, data) {
 //------------------------------------------------------------------------------------
 
 async function fetchWeatherForLocation(locationName) {
+  noResult.classList.add("display-none");
+  weatherGridContainer.classList.remove("display-none");
+  apiError.classList.add("display-none");
+  main.classList.remove("display-none");
   const coord = await getCoordinates(locationName);
   if (coord) {
     if (coord.city == undefined) {
