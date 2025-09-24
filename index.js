@@ -1,23 +1,23 @@
+const body = document.querySelector("body");
 const todayDate = document.getElementById("today-date");
 const currentTemp = document.getElementById("current-temp");
 const currentTempImg = document.getElementById("current-temp-img");
+const currentLocation = document.getElementById("current-location");
+const currentFeels = document.getElementById("current-feels");
 const currentWindSpeed = document.getElementById("current-wind-speed");
 const currentHumidity = document.getElementById("current-humidity");
 const currentPrecipitation = document.getElementById("current-precipitation");
-const currentFeels = document.getElementById("current-feels");
-const currentLocation = document.getElementById("current-location");
 const unitsContainer = document.getElementById("unit-container");
 const unitsDropdown = document.getElementById("units-drop-down");
-const hourlyForecastDropdown = document.getElementById(
-  "hourly-forecast-dropdown"
-);
+const hourlyForecastDropdown = document.getElementById("hourly-forecast-dropdown");
 const daysContainer = document.getElementById("days-container");
 let currentLatitude = null;
 let currentLongitude = null;
-const body = document.querySelector("body");
 let loc = "Addis ababa";
 
 //------------------------------------------------------------------------------------
+// Change Unit measurment from one unit to another(functionality & display)
+
 unitsDropdown.addEventListener("click", (e) => {
   switch (e.target.id) {
     case "celsius":
@@ -55,6 +55,7 @@ unitsDropdown.addEventListener("click", (e) => {
 });
 
 //------------------------------------------------------------------------------------
+// Unit measurments and Days dropdown on the mouse enter and leave
 
 unitsContainer.addEventListener("mouseenter", () => {
   unitsDropdown.classList.remove("display-none");
@@ -86,6 +87,9 @@ body.addEventListener("click", () => {
 });
 
 //------------------------------------------------------------------------------------
+// Get country, city, latitude and longitude (Coordinates).
+
+
 async function getCoordinates(locationName) {
   const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
     locationName
@@ -108,6 +112,9 @@ async function getCoordinates(locationName) {
 }
 
 //------------------------------------------------------------------------------------
+// Listen for input, get 6 results related to that input,
+// listen for those results on click inorder to get their coordinates
+
 
 const searchBar = document.getElementById("search-input");
 const searchResults = document.getElementById("search-dropdown");
@@ -119,7 +126,9 @@ async function getLocationSuggestions(query) {
     return;
   }
 
-  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(query)}&count=6`;
+  const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(
+    query
+  )}&count=6`;
   try {
     const response = await fetch(url);
     const data = await response.json();
@@ -149,8 +158,8 @@ async function getLocationSuggestions(query) {
         const country = item.textContent.split(",")[1].trim();
 
         searchResults.innerHTML = ""; // clear dropdown
-        searchBar.value = city +", "+ country; // fill input
-        fetchWeatherForLocation(city); // your existing function
+        searchBar.value = city + ", " + country; 
+        fetchWeatherForLocation(city);
       });
     });
   } catch (error) {
@@ -164,126 +173,54 @@ searchBar.addEventListener("input", () => {
   clearTimeout(debounceTimeout);
   debounceTimeout = setTimeout(() => {
     getLocationSuggestions(searchBar.value);
-  }, 300); // wait 300ms after typing
+  }, 300);
 });
 
-
 //------------------------------------------------------------------------------------
+// Current temp main display, current temp details, houlry forecast, days dropdown, daily predictions
+
 
 async function getWeatherData(city, country, weatherUrl) {
-  try {
+    const days = ["Sun", "Mon", "Tue", "wed", "Thru", "Fri", "Sat"];
+    const now = new Date();
+try {
     const response = await fetch(weatherUrl);
     const data = await response.json();
 
-    currentLocation.textContent = `${city}, ${country}`;
+// Current temp main display
+     currentLocation.textContent = `${city}, ${country}`;
+     currentTemp.textContent = Math.round(data.current.temperature_2m) + "°";
+    const currentCode = data.current.weathercode;
+    currentTempImg.src = `${getWeatherIcon(currentCode)}`;
 
-    currentTemp.textContent = Math.round(data.current.temperature_2m) + "°";
-
-    currentWindSpeed.textContent =
-      Math.round(data.current.windspeed_10m) + " " + unitOptions.windUnit;
-
-    currentHumidity.textContent =
-      Math.round(data.current.relative_humidity_2m) + "%";
-
-    currentPrecipitation.textContent =
-      Math.round(data.current.precipitation) + unitOptions.precipUnit;
-    currentFeels.textContent =
-      Math.round(data.current.apparent_temperature) + "°";
-
-    const days = ["Sun", "Mon", "Tue", "wed", "Thru", "Fri", "Sat"];
-
-    const now = new Date();
-    todayDate.textContent = now.toLocaleDateString("en-us", {
+     todayDate.textContent = now.toLocaleDateString("en-us", {
       weekday: "long",
       day: "numeric",
       month: "short",
       year: "numeric",
     });
 
-    // Hourly details example (first hour)
+// Current temp details
+    currentWindSpeed.textContent = Math.round(data.current.windspeed_10m) + " " + unitOptions.windUnit;
+    currentHumidity.textContent = Math.round(data.current.relative_humidity_2m) + "%";
+    currentPrecipitation.textContent = Math.round(data.current.precipitation) + unitOptions.precipUnit;
+    currentFeels.textContent = Math.round(data.current.apparent_temperature) + "°";
+
+// Hourly Forecast details
     const hourlyTemp = data.hourly.temperature_2m;
     const hourlyPrecipitation = data.hourly.precipitation;
     const hourlyWindSpeed = data.hourly.windspeed_10m;
     const hourlyHumidity = data.hourly.relative_humidity_2m;
-
-    // Daily details example (first day)
-    const dailyMaxTemp = data.daily.temperature_2m_max[0];
-    const dailyMinTemp = data.daily.temperature_2m_min[0];
-
-    // day1Max.textContent = Math.round(dailyMaxTemp)
-    // day1min.textContent = Math.round(dailyMinTemp)
-
-    // for (let i = 1; i <= 7; i++) {
-    //   const dayMax = document.getElementById(`day-${i}-max`);
-    //   const dayMin = document.getElementById(`day-${i}-min`);
-    //   const today = document.getElementById(`day-${i}`);
-
-    //   dayMax.textContent = Math.round(data.daily.temperature_2m_max[i - 1]);
-    //   dayMin.textContent = Math.round(data.daily.temperature_2m_min[i - 1]);
-    //   const s = now.getDay();
-
-    //   if (counter === s) {
-    //     today.textContent = "Now";
-    //   } else if (counter != s && counter === 7) {
-    //     counter = 0;
-    //   } else {
-    //     today.textContent = days[counter];
-    //   }
-    //   counter++;
-    // }
+    const container = document.getElementById("hourly-forecast-container");
 
     const times = data.hourly.time;
     const codes = data.hourly.weathercode;
-    const dailyCodes = data.daily.weathercode;
-    const currentCode = data.current.weathercode;
-    currentTempImg.src = `${getWeatherIcon(currentCode)}`;
-    let counter = now.getDay();
-    const dailyForecastContainer = document.getElementById(
-      "daily-forecast-container"
-    );
-    dailyForecastContainer.innerHTML = ""; // clear old cards first
-    hourlyForecastDropdown.innerHTML = "";
-    for (let i = 0; i < 7; i++) {
-      const dailyIcon = getWeatherIcon(dailyCodes[i]);
 
-      const today = document.createElement("p");
-      const dailyCard = document.createElement("div");
-      const dayMax = Math.round(data.daily.temperature_2m_max[i]);
-      const dayMin = Math.round(data.daily.temperature_2m_min[i]);
-      dailyCard.innerHTML = `
-          <div>
-            <p id="day-${i}">${days[counter]}</p>
-            <img src="${dailyIcon}" alt="weather-icon" />
-            <div class="degree-range flex">
-              <p id="day-${i}-max">${dayMax}°</p>
-              <p id="day-${i}-min">${dayMin}°</p>
-            </div>
-          </div>`;
-
-      if (i !== 0) {
-        today.addEventListener("click", () => {
-          showHourlyForDay(i, data);
-        });
-      }
-
-      today.textContent = `${days[counter]}`;
-
-      hourlyForecastDropdown.appendChild(today);
-      dailyForecastContainer.appendChild(dailyCard);
-      const s = now.getDay();
-      counter++;
-      if (counter != s && counter === 7) {
-        counter = 0;
-      }
-    }
-
-    const container = document.getElementById("hourly-forecast-container");
     Array.from(container.children)
       .slice(1) // skip first child
       .forEach((child) => child.remove());
 
     let startIndex = times.findIndex((t) => new Date(t) >= now); // find closest forecast time >= now
-
     const step = 3;
     const limit = 8;
     let count = 0;
@@ -296,8 +233,7 @@ async function getWeatherData(city, country, weatherUrl) {
           : hour < 12
           ? hour + " AM"
           : (hour - 12 || 12) + " PM";
-
-      // pick icon path from weather code
+     // pick icon path from weather code
       const icon = getWeatherIcon(codes[i]);
       const card = document.createElement("div");
       card.className = "items flex flex-col items-center";
@@ -310,10 +246,52 @@ async function getWeatherData(city, country, weatherUrl) {
     `;
 
       container.appendChild(card);
-
       count++;
     }
+      
 
+// Daily Forecast details
+    const dailyForecastContainer = document.getElementById(
+      "daily-forecast-container"
+    );
+    const dailyCodes = data.daily.weathercode;
+    dailyForecastContainer.innerHTML = ""; // clear old cards first
+    hourlyForecastDropdown.innerHTML = ""; // clear old days dropdown
+
+    let counter = now.getDay();
+    for (let i = 0; i < 7; i++) {
+      const today = document.createElement("p");
+      const dailyCard = document.createElement("div");
+      const dayMax = Math.round(data.daily.temperature_2m_max[i]);
+      const dayMin = Math.round(data.daily.temperature_2m_min[i]);
+      const dailyIcon = getWeatherIcon(dailyCodes[i]);
+      
+      dailyCard.innerHTML = `
+          <div>
+            <p id="day-${i}">${days[counter]}</p>
+            <img src="${dailyIcon}" alt="weather-icon" />
+            <div class="degree-range flex">
+              <p id="day-${i}-max">${dayMax}°</p>
+              <p id="day-${i}-min">${dayMin}°</p>
+            </div>
+          </div>`;
+
+      // Change hourly forecast when the day change
+      if (i !== 0) {
+        today.addEventListener("click", () => {
+          showHourlyForDay(i, data);
+        });
+      }      
+      today.textContent = `${days[counter]}`;
+
+      hourlyForecastDropdown.appendChild(today);
+      dailyForecastContainer.appendChild(dailyCard);
+      const s = now.getDay();
+      counter++;
+      if (counter != s && counter === 7) {
+        counter = 0;
+      }
+    }
     return data;
   } catch (error) {
     console.error("Error: ", error);
@@ -324,15 +302,13 @@ async function getWeatherData(city, country, weatherUrl) {
 
 function showHourlyForDay(dayIndex, data) {
   const container = document.getElementById("hourly-forecast-container");
-
-  // keep first child if needed
-  Array.from(container.children)
-    .slice(1)
-    .forEach((c) => c.remove());
-
   const times = data.hourly.time;
   const temps = data.hourly.temperature_2m;
   const codes = data.hourly.weathercode;
+
+  Array.from(container.children)
+    .slice(1)
+    .forEach((c) => c.remove());
 
   // get the date string for that day (YYYY-MM-DD)
   const selectedDate = data.daily.time[dayIndex];
@@ -397,11 +373,6 @@ function getWeatherIcon(code) {
   if (code >= 71 && code <= 77) return "./assets/images/icon-snow.webp"; // snow
   if (code >= 95) return "./assets/images/icon-storm.webp"; // thunderstorm
   return "./assets/images/icon-fog.webp"; // fallback
-
-  // if (code === 0) return "./assets/images/icon-sunny.webp";      // clear
-  // if ([1, 2, 3].includes(code)) return "./assets/images/icon-partly-cloudy.webp"; // cloudy
-  // if (code >= 51 && code <= 67) return "./assets/images/icon-rain.webp";  // rain
-  // return "./assets/images/icon-fog.webp"; // fallback
 }
 
 //------------------------------------------------------------------------------------
@@ -436,11 +407,11 @@ let unitOptions = {
 
 const n = String(loc);
 loc = n
-  .split(" ") // split by spaces
+  .split(" ") 
   .map(
     (word) =>
-      word.charAt(0).toUpperCase() + // first letter upper
-      word.slice(1).toLowerCase() // rest lower
+      word.charAt(0).toUpperCase() + 
+      word.slice(1).toLowerCase() 
   )
   .join(" ");
 

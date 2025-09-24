@@ -377,7 +377,8 @@ figure {
   justify-content: space-between;
 }
 
-.unit-container, .days-container {
+.unit-container,
+.days-container {
   position: relative;
   justify-content: space-between;
   align-items: center;
@@ -555,7 +556,7 @@ input:hover {
   margin-left: auto;
 }
 
-.display-none{
+.display-none {
   display: none;
 }
 
@@ -605,7 +606,7 @@ input:hover {
   display: block;
 }
 /* unit-container == days-container */
-.search{
+.search {
   position: relative;
 }
 .search-dropdown {
@@ -658,7 +659,6 @@ p:focus {
     top: 4rem;
   }
   .search {
-
     max-width: 70%;
     margin-inline: auto;
     grid-template-columns: 2fr 1fr;
