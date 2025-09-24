@@ -1,4 +1,4 @@
-# COOL - Weather app solution
+# COOL - Weather app
 
 This is a cool website i have ever built before like his name.For me it was a great experiance and learning journey. I know it may be so simple for you but i tell you i wasn't for me. If you want to know the amount of work and dedication i put in to this project please go visit it and try something you hope it won't work. yeah if you love it please i beg you try to give me some advice you think would help me.
 
