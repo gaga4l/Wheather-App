@@ -67,7 +67,7 @@ Users should be able to:
 ## Author
 
 - Github - [Gaga](https://github.com/gaga4l)
-- Linkedin - [Gaga](https://linkedin.com/gaga4l)
+- Linkedin - [Gaga](https://www.linkedin.com/in/gaga4l?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app)
 - Twitter - [Gaga](https://www.twitter.com/lelisa_8)
 
 
