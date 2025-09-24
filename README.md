@@ -35,11 +35,7 @@ Users should be able to:
 
 - My Solution
 
-![Screenshot](./assets/images/image.png)
-
-- Given Design
-
-![Screenshot](./design/desktop-design-imperial.jpg)
+![](./assets/images/image.png)
 
 
 
