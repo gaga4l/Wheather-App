@@ -18,7 +18,7 @@
   <body class="grid-container">
     <header class="primary-header flex">
       <div>
-        <img src="./assets/images/logo.svg" alt="weather now logo" />
+        <img src="./assets/images/logo.svg" alt="weather now logo" id="logo" />
       </div>
       <div id="unit-container" class="unit-container flex">
         <img src="./assets/images/icon-units.svg" alt="setting icon" />
@@ -68,19 +68,17 @@
       <div class="wheather-grid-container">
         <div class="show">
           <div>
-            <p id="current-location" class="location">Berlin, Germany</p>
-            <p id="today-date" class="date">Tuesday, Aug 5, 2025</p>
+            <p id="current-location" class="location"></p>
+            <p id="today-date" class="date"></p>
           </div>
 
           <div class="contain flex">
             <div class="image-container">
               <img
                 id="current-temp-img"
-                src="./assets/images/icon-sunny.webp"
-                alt="icon-sunny"
               />
             </div>
-            <p id="current-temp">68</p>
+            <p id="current-temp"></p>
           </div>
         </div>
 
@@ -177,7 +175,7 @@
             <p>Hourly forecast</p>
 
             <div id="days-container" class="days-container flex">
-              <p>Today</p>
+              <p id="today"></p>
               <img
                 src="./assets/images/icon-dropdown.svg"
                 alt="Dropdown icon"

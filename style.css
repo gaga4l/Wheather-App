@@ -376,6 +376,9 @@ figure {
 .primary-header {
   justify-content: space-between;
 }
+#logo{
+  cursor: pointer;
+}
 
 .unit-container,
 .days-container {
@@ -443,6 +446,7 @@ figure {
   font-size: var(--fs-700);
   border-radius: 10px;
   font-family: var(--ff-dmsans);
+  cursor:pointer;
 }
 
 .wheather-grid-container {

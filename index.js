@@ -25,9 +25,16 @@ const daysLong = [
   "Friday",
   "Saturday",
 ];
+const logo = document.getElementById("logo")
 const now = new Date();
 let loc = "new york";
 getApproxLocation();
+
+
+logo.addEventListener("click", () => {
+  location.reload()
+})
+
 //------------------------------------------------------------------------------------
 // Change Unit measurment from one unit to another(functionality & display)
 
@@ -154,6 +161,8 @@ const searchResults = document.getElementById("search-dropdown");
 async function getLocationSuggestions(query) {
   if (!query) {
     searchResults.innerHTML = "";
+        searchResults.classList.remove("small-padding");
+
     return;
   }
 
@@ -163,7 +172,6 @@ async function getLocationSuggestions(query) {
   try {
     const response = await fetch(url);
     const data = await response.json();
-    searchResults.classList.add("small-padding");
     if (!data.results) {
       searchResults.innerHTML = "<p>No results found</p>";
       return;
@@ -179,6 +187,7 @@ async function getLocationSuggestions(query) {
         </div>`
       )
       .join("");
+        searchResults.classList.add("small-padding");
     // Add click listeners to suggestions
     document.querySelectorAll(".search-item").forEach((item) => {
       item.addEventListener("click", () => {
@@ -279,12 +288,19 @@ function dailyForecast(data) {
     if (i === 0) {
       today.classList.add("now-day")
       today.textContent = `Today`;
+      document.getElementById("today").textContent = `${today.textContent}`
       today.addEventListener("click", () => {
+        document.getElementById("today").textContent = `${today.textContent}`
+        document.querySelector(".now-day").classList.remove("now-day")
+        today.classList.add("now-day")
         hourlyForecast(data);
       });
     } else {
       today.textContent = `${daysLong[counter]}`;
       today.addEventListener("click", () => {
+        document.getElementById("today").textContent = `${today.textContent}`
+        document.querySelector(".now-day").classList.remove("now-day")
+        today.classList.add("now-day")
         showHourlyForDay(i, data);
       });
     }
