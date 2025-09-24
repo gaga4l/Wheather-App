@@ -44,8 +44,8 @@ Users should be able to:
 
 ### Links
 
-- Live Site URL: [Live](https://your-live-site-url.com)
-- Repository URL: [Repo](https://your-solution-url.com)
+- Live Site URL: [Live](https://coolweatherapp.vercel.app/)
+- Repository URL: [Repo](https://github.com/gaga4l/Wheather-App)
 
 
 ## My process
